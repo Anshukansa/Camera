@@ -143,7 +143,7 @@ async function capturePhoto() {
         context.fillStyle = 'white'; // White text for visibility
         context.font = "15px Arial"; // Font style
         context.fillText(`${currentDateTime}`, 10, 30); // Display date/time
-        context.fillText(`${address}`, 10, 30); // Display the address
+        context.fillText(`${address}`, 10, 60); // Display the address
 
         canvasElement.style.display = "block"; // Display the canvas
 
