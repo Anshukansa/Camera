@@ -2,26 +2,26 @@
 /* Basic styling for the page */
 body {
     font-family: Arial, sans-serif;
-    text-align: center; /* Center-align content */
+    text-align: center; /* Center align content */
     padding: 20px; /* Add padding for spacing */
 }
 
 /* Styling for buttons */
 button {
     padding: 10px 20px; /* Standard padding for buttons */
-    margin: 10px; /* Margin between buttons */
-    font-size: 16px; /* Larger font size for readability */
-}
-
-/* Styling for the error message section */
-#error-message {
-    color: red; /* Error messages in red */
-    text-align: center;
-    margin-top: 10px; /* Space above the error message section */
+    margin: 10px; /* Add space between buttons */
+    font-size: 16px; /* Larger font for readability */
 }
 
 /* Styling for the photo gallery */
 #photo-gallery {
-    text-align: center; /* Center-align gallery content */
-    margin-top: 20px; /* Space above the gallery */
+    text-align: center; /* Center align photos */
+    margin-top: 20px; /* Add space above the gallery */
+}
+
+/* Styling for error messages */
+#error-message {
+    color: red; /* Use red for error messages */
+    text-align: center;
+    margin-top: 10px; /* Add space above the error message */
 }
