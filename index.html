@@ -3,26 +3,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Photo Session with Permissions</title>
-    <!-- Link to CSS for styling -->
+    <title>Photo Session</title>
+    <!-- Link to external CSS for styling -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Page header -->
-    <h1>Photo Session with Permissions</h1>
+    <h1>Photo Session</h1>
 
-    <!-- Buttons for starting session, capturing photos, and ending session -->
-    <button id="start-session">Start Session (Request Permissions)</button> <!-- Initiates permissions request -->
-    <button id="capture-photo" disabled>Capture Photo</button> <!-- Disabled until permissions are granted -->
-    <button id="end-session" disabled>End Session</button> <!-- Disabled until session is started -->
+    <!-- Session controls -->
+    <div id="controls">
+        <button id="start-session">Start Session</button>
+        <button id="capture-photo" disabled>Capture Photo</button>
+        <button id="end-session" disabled>End Session</button>
+        <button id="share-photos" disabled>Share Photos</button>
+        <button id="delete-photos" disabled>Delete All Photos</button>
+    </div>
 
-    <!-- Div for displaying captured photos -->
+    <!-- Photo gallery for displaying captured photos -->
     <div id="photo-gallery"></div>
 
-    <!-- Div for error messages or permission issues -->
+    <!-- Area for displaying error messages or instructions -->
     <div id="error-message"></div>
 
-    <!-- Link to the JavaScript file -->
-    <script src="app.js"></script> <!-- Ensure JavaScript is linked at the end -->
+    <!-- Link to the JavaScript file for functionality -->
+    <script src="app.js"></script>
 </body>
 </html>
