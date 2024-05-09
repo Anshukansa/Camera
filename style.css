@@ -50,22 +50,12 @@ button:disabled {
     border-radius: 10px;
 }
 
-/* Styling for the photo gallery */
-.photo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid */
-    gap: 10px; /* Space between photos */
+/* Styling for the latest photo display */
+.latest-photo {
     margin-top: 20px;
-}
-
-/* Styling for error messages */
-#error-message {
-    color: red;
     text-align: center;
-    margin-top: 10px;
 }
 
-/* Styling for captured photos */
 .photo-thumbnail {
     border: 2px solid #ccc;
     border-radius: 10px;
