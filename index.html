@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera Website</title>
+    <style>
+        /* Basic styling for the camera and buttons */
+        #camera {
+            width: 100%;
+            height: auto;
+        }
+        #video {
+            width: 640px;
+            height: 480px;
+            border: 2px solid black;
+        }
+        #snapshot {
+            border: 2px solid black;
+            width: 640px;
+            height: 480px;
+            display: none;
+        }
+        #takePicture {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Camera Website</h1>
+    <!-- Video element to display webcam feed -->
+    <video id="video" autoplay></video>
+    <!-- Button to take a picture -->
+    <button id="takePicture">Take Picture</button>
+    <!-- Canvas to display the taken picture -->
+    <canvas id="snapshot"></canvas>
+
+    <script>
+        // Select video and canvas elements
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('snapshot');
+        const context = canvas.getContext('2d');
+        const takePictureButton = document.getElementById('takePicture');
+
+        // Access the webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                // Attach the webcam stream to the video element
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('Error accessing webcam:', error);
+            });
+
+        // Take a picture when the button is clicked
+        takePictureButton.addEventListener('click', () => {
+            // Set canvas size to match the video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            // Draw the current video frame on the canvas
+            context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
+            // Display the taken picture
+            canvas.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
