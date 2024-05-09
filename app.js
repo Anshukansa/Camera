@@ -4,26 +4,26 @@ let cameraStream = null;
 let photos = []; // Store captured photos
 
 // Get references to UI elements
-const startSessionButton = document.getElementById("startSession");
-const capturePhotoButton = document.getElementById("capturePhoto");
-const endSessionButton = document.getElementById("endSession");
-const sharePhotosButton = document.getElementById("sharePhotos");
-const deletePhotosButton = document.getElementById("deletePhotos");
-const videoElement = document.getElementById("video");
-const canvasElement = document.getElementById("canvas");
-const context = canvasElement.getContext("2d");
-const photoGallery = document.getElementById("photo-gallery");
-const errorMessage = document.getElementById("error-message");
+const startSessionButton = document.getElementById("startSession"); // Reference to the "Start Session" button
+const capturePhotoButton = document.getElementById("capturePhoto"); // "Capture Photo" button
+const endSessionButton = document.getElementById("endSession"); // "End Session" button
+const sharePhotosButton = document.getElementById("sharePhotos"); // "Share Photos" button
+const deletePhotosButton = document.getElementById("deletePhotos"); // "Delete All Photos" button
+const videoElement = document.getElementById("video"); // Video element for camera stream
+const canvasElement = document.getElementById("canvas"); // Canvas for drawing photos
+const context = canvasElement.getContext("2d"); // Canvas context
+const photoGallery = document.getElementById("photo-gallery"); // Gallery to display photos
+const errorMessage = document.getElementById("error-message"); // For error messages
 
 // Function to clear error messages
 function clearError() {
-    errorMessage.textContent = ''; // Clear any existing error messages
+    errorMessage.textContent = ''; // Clear existing error messages
 }
 
 // Function to show error messages to the user
 function showError(message) {
-    console.error(message); // Log to console
-    errorMessage.textContent = message; // Display to user
+    console.error(message); // Log error to console for debugging
+    errorMessage.textContent = message; // Display error message to the user
 }
 
 // Function to request camera permissions
@@ -60,11 +60,11 @@ function requestLocationPermission() {
                             errorMessage = "An unknown error occurred.";
                             break;
                     }
-                    reject(new Error(errorMessage)); // Permission denied
+                    reject(new Error(errorMessage)); // Handle permission rejection
                 }
             );
         } else {
-            reject(new Error("Geolocation not supported.")); // Unsupported
+            reject(new Error("Geolocation not supported.")); // If unsupported
         }
     });
 }
@@ -76,11 +76,11 @@ async function getAddressFromCoordinates(lat, lon) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        
+
         if (data.display_name) {
             return data.display_name; // Return the address
         } else {
-            return "No address found."; // If no address is found
+            return "No address found."; // Handle missing address
         }
     } catch (error) {
         return "Error getting address."; // Handle fetch errors
@@ -93,18 +93,18 @@ async function startSession() {
 
     const hasCameraPermission = await requestCameraPermission(); // Request camera permission
     if (!hasCameraPermission) {
-        return; // Don't proceed if camera permission is denied
+        return; // If camera permission is denied, stop here
     }
 
     try {
         await requestLocationPermission(); // Request location permission
 
         sessionActive = true; // Mark the session as active
-        capturePhotoButton.disabled = false; // Enable "Capture Photo"
-        endSessionButton.disabled = false; // Enable "End Session"
+        capturePhotoButton.disabled = false; // Enable the "Capture Photo" button
+        endSessionButton.disabled = false; // Enable the "End Session" button
         sharePhotosButton.disabled = true; // Disable "Share Photos"
         deletePhotosButton.disabled = true; // Disable "Delete All Photos"
-        photos = []; // Reset photos array
+        photos = []; // Reset the photos array
         photoGallery.innerHTML = ''; // Clear the photo gallery
 
     } catch (error) {
@@ -126,7 +126,7 @@ async function capturePhoto() {
         const imageCapture = new ImageCapture(track); // Initialize ImageCapture
         const photoBlob = await imageCapture.takePhoto(); // Capture the photo
 
-        const currentDateTime = new Date().toLocaleString(); // Get the current date/time
+        const currentDateTime = new Date().toLocaleString(); // Get current date/time
 
         const position = await requestLocationPermission(); 
         const { latitude, longitude } = position.coords;
@@ -145,13 +145,13 @@ async function capturePhoto() {
         context.fillText(`Date: ${currentDateTime}`, 10, 30); // Display date/time
         context.fillText(`Lat: ${latitude.toFixed(4)}`, 10, 60); // Display latitude
         context.fillText(`Long: ${longitude.toFixed(4)}`, 10, 90); // Display longitude
-        context.fillText(`Location: ${address}`, 10, 120); // Display address
+        context.fillText(`Location: ${address}`, 10, 120); // Display the address
 
         canvasElement.style.display = "block"; // Display the canvas
 
         // Store the photo in the photo gallery
-        const photoURL = canvasElement.toDataURL("image/png"); // Save as image
-        photos.push(photoURL); // Store in array
+        const photoURL = canvasElement.toDataURL("image/png"); // Convert to data URL
+        photos.push(photoURL); // Store in photos array
 
         // Add to the photo gallery
         const imgElement = document.createElement("img");
@@ -175,10 +175,10 @@ function endSession() {
     capturePhotoButton.disabled = true; // Disable "Capture Photo"
     endSessionButton.disabled = true; // Disable "End Session"
     sharePhotosButton.disabled = false; // Enable "Share Photos"
-    deletePhotosButton disabled = true; // Enable "Delete All Photos"
+    deletePhotosButton.disabled = true; // Enable "Delete All Photos"
 
     if (photos.length === 0) {
-        showError("No photos to share or delete."); // If there are no photos
+        showError("No photos to share or delete."); // If there are no photos, inform the user
         return;
     }
 }
