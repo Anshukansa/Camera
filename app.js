@@ -127,7 +127,7 @@ async function capturePhoto() {
 
         context.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
 
-        const currentDateTime = new Date().toLocaleString(); // Get current date/time
+        const currentDateTime = new Date().toLocaleString();
 
         const position = await requestLocationPermission();
         const { latitude, longitude } = position.coords;
@@ -142,12 +142,14 @@ async function capturePhoto() {
         const photoBlob = await new Promise((resolve) => canvasElement.toBlob(resolve, "image/png"));
         const file = new File([photoBlob], "snapshot.png", { type: "image/png" });
 
-        photos.push(file); // Store in photos array
+        photos.push(file);
 
         const imgElement = document.createElement("img");
         imgElement.src = URL.createObjectURL(photoBlob);
         imgElement.style.margin = "10px";
         photoGallery.appendChild(imgElement);
+
+        sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
@@ -163,13 +165,8 @@ function endSession() {
     sessionActive = false;
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
-    sharePhotosButton.disabled = false;
+    sharePhotosButton.disabled = photos.length === 0;
     deletePhotosButton.disabled = photos.length === 0;
-
-    if (photos.length === 0) {
-        showError("No photos to share.");
-        return;
-    }
 }
 
 // Function to share all photos
@@ -181,21 +178,18 @@ async function sharePhotos() {
         return;
     }
 
-    // Check if Web Share API supports sharing files
     if (navigator.canShare && navigator.canShare({ files: photos })) {
         try {
             await navigator.share({
                 files: photos,
                 title: "Captured Photos",
-                text: "Here are some photos I took!",
+                text: "Here are the photos I took!",
             });
-
-            console.log("Photos shared successfully");
         } catch (error) {
             showError("Error sharing photos: " + error.message);
         }
     } else {
-        showError("Web Share API does not support sharing files.");
+        showError("Web Share API does not support sharing files in this browser.");
     }
 }
 
@@ -203,6 +197,7 @@ async function sharePhotos() {
 function deletePhotos() {
     photos = [];
     photoGallery.innerHTML = "";
+    sharePhotosButton.disabled = true; // Disable share button after deleting
 }
 
 // Event listeners for the buttons
