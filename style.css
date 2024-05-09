@@ -1,0 +1,20 @@
+/* style.css */
+/* Basic styling for the webpage */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center; /* Center content */
+}
+
+/* Styling for buttons */
+button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px; /* Standard padding for buttons */
+}
+
+/* Styling for the error message section */
+#error-message {
+    color: red; /* Error messages in red */
+    text-align: center;
+    margin-top: 10px; /* Space above the error message section */
+}
