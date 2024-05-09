@@ -141,11 +141,9 @@ async function capturePhoto() {
 
         // Overlay date/time/location information
         context.fillStyle = 'white'; // White text for visibility
-        context.font = "20px Arial"; // Font style
-        context.fillText(`Date: ${currentDateTime}`, 10, 30); // Display date/time
-        context.fillText(`Lat: ${latitude.toFixed(4)}`, 10, 60); // Display latitude
-        context.fillText(`Long: ${longitude.toFixed(4)}`, 10, 90); // Display longitude
-        context.fillText(`Location: ${address}`, 10, 120); // Display the address
+        context.font = "15px Arial"; // Font style
+        context.fillText(`${currentDateTime}`, 10, 30); // Display date/time
+        context.fillText(`${address}`, 10, 120); // Display the address
 
         canvasElement.style.display = "block"; // Display the canvas
 
