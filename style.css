@@ -46,16 +46,35 @@ button:disabled {
 
 /* Styling for video and canvas */
 .camera-video {
-    width: 300px; /* Set video width for visibility */
+    width: 300px;
     border-radius: 10px;
 }
 
-/* Styling for the latest photo display */
-.latest-photo {
-    margin-top: 20px;
-    text-align: center;
+/* Styling for the last photo container */
+.last-photo-container {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px;
+    display: inline-block;
 }
 
+/* Styling for the photo gallery */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid */
+    gap: 10px; /* Space between photos */
+    margin-top: 20px;
+}
+
+/* Styling for error messages */
+#error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Styling for photo thumbnails */
 .photo-thumbnail {
     border: 2px solid #ccc;
     border-radius: 10px;
