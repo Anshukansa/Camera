@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera with Sharing Functionality</title>
+    <style>
+        #video {
+            width: 640px;
+            height: 480px;
+            border: 2px solid black;
+        }
+        #canvas {
+            border: 2px solid black;
+            width: 640px;
+            height: 480px;
+            display: none;
+        }
+        #takePicture, #sharePicture {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera with Time, Location, and Sharing</h1>
+    <video id="video" autoplay></video>
+    <button id="takePicture">Take Picture</button>
+    <button id="sharePicture" style="display: none;">Share Picture</button> <!-- Initially hidden -->
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const takePictureButton = document.getElementById('takePicture');
+        const sharePictureButton = document.getElementById('sharePicture');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('Error accessing webcam:', error);
+            });
+
+        function getCurrentDateTime() {
+            const now = new Date();
+            return now.toLocaleString();
+        }
+
+        function getLocation(callback) {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        callback(`Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`);
+                    },
+                    (error) => {
+                        callback('Location not available');
+                    }
+                );
+            } else {
+                callback('Location not available');
+            }
+        }
+
+        takePictureButton.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
+            const currentDateTime = getCurrentDateTime();
+
+            getLocation((location) => {
+                context.font = '20px Arial';
+                context.fillStyle = 'white';
+                context.fillText(currentDateTime, 10, 30);
+                context.fillText(location, 10, 60);
+
+                // Show the canvas
+                canvas.style.display = 'block';
+
+                // Enable the share button
+                sharePictureButton.style.display = 'inline-block';
+            });
+        });
+
+        sharePictureButton.addEventListener('click', async () => {
+            if (navigator.canShare) {
+                // Convert canvas to a Blob
+                const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+
+                const file = new File([blob], 'snapshot.png', { type: 'image/png' });
+
+                // Trigger the native share dialogue if supported
+                if (navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        files: [file],
+                        title: 'Snapshot',
+                        text: 'Here is the photo I just took!',
+                    })
+                    .then(() => console.log('Shared successfully'))
+                    .catch((error) => console.error('Error sharing:', error));
+                } else {
+                    console.error('Cannot share files');
+                }
+            } else {
+                console.error('Web Share API not supported');
+            }
+        });
+    </script>
+</body>
+</html>
