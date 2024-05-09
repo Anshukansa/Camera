@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Location Permission</title>
+    <script>
+        function requestLocation() {
+            // Check if geolocation is supported
+            if (navigator.geolocation) {
+                // Get user's current position
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Display coordinates and trigger reverse geocoding
+                        document.getElementById("coords").innerText = `Lat: ${latitude}, Lon: ${longitude}`;
+                        getAddressFromCoordinates(latitude, longitude);
+                    },
+                    (error) => {
+                        // Handle errors
+                        let errorMessage;
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = "Permission denied.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = "Position unavailable.";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = "Request timed out.";
+                                break;
+                            default:
+                                errorMessage = "An unknown error occurred.";
+                                break;
+                        }
+                        document.getElementById("coords").innerText = errorMessage;
+                    }
+                );
+            } else {
+                document.getElementById("coords").innerText = "Geolocation not supported.";
+            }
+        }
+
+        function getAddressFromCoordinates(lat, lon) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.display_name) {
+                        document.getElementById("address").innerText = data.display_name;
+                    } else {
+                        document.getElementById("address").innerText = "No address found.";
+                    }
+                })
+                .catch((error) => {
+                    document.getElementById("address").innerText = "Error getting address.";
+                });
+        }
+    </script>
+</head>
+<body onload="requestLocation()">
+    <h1>Geolocation Permission</h1>
+    <p>Coordinates: <span id="coords">Requesting...</span></p>
+    <p>Address: <span id="address">Awaiting location...</span></p>
+</body>
+</html>
