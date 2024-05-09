@@ -70,43 +70,27 @@ function requestLocationPermission() {
     });
 }
 
-// Function to get address from coordinates
-async function getAddressFromCoordinates(lat, lon) {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
-
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data.display_name) {
-            return data.display_name;
-        } else {
-            return "No address found.";
-        }
-    } catch (error) {
-        return "Error getting address.";
-    }
-}
-
 // Function to start the session
 async function startSession() {
     clearError();
 
     const hasCameraPermission = await requestCameraPermission();
     if (!hasCameraPermission) {
+        showError("Error starting session: Camera permission denied.");
         return;
     }
 
     try {
-        await requestLocationPermission();
+        await requestLocationPermission(); // This line should not throw any errors
 
         sessionActive = true;
         capturePhotoButton.disabled = false;
         endSessionButton.disabled = false;
-        sharePhotosButton.disabled = true;
-        deletePhotosButton.disabled = true;
-        photos = [];
-        photoGallery.innerHTML = "";
+        sharePhotosButton.disabled = true; // No photos initially
+        deletePhotosButton.disabled = true; // No photos initially
+        photos = []; // Reset photos array
+        photoGallery.innerHTML = ""; // Clear gallery
+        lastCapturedPhoto.innerHTML = ""; // Clear last photo display
 
     } catch (error) {
         showError("Error starting session: " + error.message);
@@ -145,19 +129,15 @@ async function capturePhoto() {
 
         photos.push(file);
 
-        const imgElement = document.createElement("img");
-        imgElement.src = URL.createObjectURL(photoBlob);
-        imgElement.className = "photo-thumbnail"; // Styled thumbnail
-        photoGallery.appendChild(imgElement);
-
-        // Show only the last captured photo separately
+        // Show the last captured photo separately
         lastCapturedPhoto.innerHTML = ""; // Clear previous content
         const lastPhotoImg = document.createElement("img");
         lastPhotoImg.src = URL.createObjectURL(photoBlob);
-        lastPhotoImg.className = "last-captured-photo"; // Styled last photo
+        lastPhotoImg.className = "photo-thumbnail"; // Styled last photo
         lastCapturedPhoto.appendChild(lastPhotoImg);
 
-        sharePhotosButton.disabled = false; // Enable share button when there are photos
+        photoGallery.appendChild(lastPhotoImg); // Add to gallery
+        sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
@@ -173,32 +153,8 @@ function endSession() {
     sessionActive = false;
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
-    deletePhotosButton.disabled = photos.length === 0;
     sharePhotosButton.disabled = photos.length === 0;
-}
-
-// Function to share all photos
-async function sharePhotos() {
-    clearError();
-
-    if (photos.length === 0) {
-        showError("No photos to share.");
-        return;
-    }
-
-    if (navigator.canShare && navigator.canShare({ files: photos })) {
-        try {
-            await navigator.share({
-                files: photos,
-                title: "Captured Photos",
-                text: "Here are the photos I took!",
-            });
-        } catch (error) {
-            showError("Error sharing photos: " + error message);
-        }
-    } else {
-        showError("Web Share API does not support sharing files in this browser.");
-    }
+    deletePhotosButton.disabled = photos.length === 0;
 }
 
 // Function to delete all photos
@@ -206,13 +162,13 @@ function deletePhotos() {
     if (confirm("Are you sure you want to delete all photos?")) {
         photos = [];
         photoGallery.innerHTML = "";
-        lastCapturedPhoto.innerHTML = "";
+        lastCapturedPhoto.innerHTML = ""; // Clear last photo display
         sharePhotosButton.disabled = true; // Disable share button after deleting
     }
 }
 
 // Event listeners for the buttons
-startSessionButton.addEventListener("click", startSession);
+startSessionButton.addEventListener("click", startSession); // Ensure this is correctly attached
 capturePhotoButton.addEventListener("click", capturePhoto);
 endSessionButton.addEventListener("click", endSession);
 sharePhotosButton.addEventListener("click", sharePhotos);
