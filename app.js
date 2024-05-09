@@ -4,15 +4,15 @@ let cameraStream = null;
 let photos = []; // Store captured photos
 
 // Get references to UI elements
-const videoElement = document.getElementById("video");
-const canvasElement = document.getElementById("canvas");
-const context = canvasElement.getContext("2d");
-const startSessionButton = document.getElementById("start-session");
-const capturePhotoButton = document.getElementById("capture-photo");
-const endSessionButton = document.getElementById("end-session");
-const sharePhotosButton = document.getElementById("share-photos");
-const deletePhotosButton = document.getElementById("delete-photos");
-const photoGallery = document.getElementById("photo-gallery");
+const startSessionButton = document.getElementById("startSession"); // Fixed ID
+const capturePhotoButton = document.getElementById("capturePhoto"); // Fixed ID
+const endSessionButton = document.getElementById("endSession"); // Fixed ID
+const sharePhotosButton = document.getElementById("sharePhotos"); // Fixed ID
+const deletePhotosButton = document.getElementById("deletePhotos"); // Fixed ID
+const videoElement = document.getElementById("video"); // Added to HTML
+const canvasElement = document.getElementById("canvas"); // Added to HTML
+const context = canvasElement.getContext("2d"); // Canvas context
+const photoGallery = document.getElementById("photo-gallery"); // Display area for photos
 const errorMessage = document.getElementById("error-message"); // For error messages
 
 // Function to clear error messages
@@ -22,7 +22,8 @@ function clearError() {
 
 // Function to show error messages to the user
 function showError(message) {
-    errorMessage.textContent = message; // Display the error message
+    console.error(message); // Log to console
+    errorMessage.textContent = message; // Display to user
 }
 
 // Function to request camera permissions
@@ -91,12 +92,14 @@ async function capturePhoto() {
         const imageCapture = new ImageCapture(track); // Initialize ImageCapture
         const photoBlob = await imageCapture.takePhoto(); // Capture the photo
 
-        const currentDateTime = new Date().toLocaleString(); // Get the current date/time
+        // Get current date/time for the overlay
+        const currentDateTime = new Date().toLocaleString(); 
 
-        const position = await requestLocationPermission(); // Request location permission
+        // Get current position
+        const position = await requestLocationPermission(); 
         const { latitude, longitude } = position.coords;
 
-        // Draw the captured photo onto a canvas
+        // Draw the captured photo onto the canvas
         canvasElement.width = videoElement.videoWidth;
         canvasElement.height = videoElement.videoHeight;
         context.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
@@ -110,12 +113,22 @@ async function capturePhoto() {
 
         canvasElement.style.display = "block"; // Display the canvas
 
+        // Store the photo in the photo gallery
+        const photoURL = canvasElement.toDataURL("image/png"); 
+        photos.push(photoURL); // Store in array
+
+        // Add to the photo gallery
+        const imgElement = document.createElement("img");
+        imgElement.src = photoURL; // Set the photo source
+        imgElement.style.margin = "10px"; // Add some margin
+        photoGallery.appendChild(imgElement); // Add to gallery
+
     } catch (error) {
         showError("Error capturing photo: " + error.message); // Handle errors
     }
 }
 
-// Function to end the session and provide sharing and deletion options
+// Function to end the session
 function endSession() {
     sessionActive = false; // Mark the session as inactive
 
@@ -149,15 +162,15 @@ function sharePhotos() {
     });
 }
 
-// Function to delete all photos after sharing
+// Function to delete all photos
 function deletePhotos() {
     photoGallery.innerHTML = ''; // Clear the photo gallery
     photos = []; // Clear the photos array
 }
 
-// Attach event listeners for buttons
-document.getElementById("startSession").addEventListener("click", startSession);
-document.getElementById("capturePhoto").addEventListener("click", capturePhoto);
-document.getElementById("endSession").addEventListener("click", endSession);
-document.getElementById("sharePhotos").addEventListener("click", sharePhotos);
-document.getElementById("deletePhotos").addEventListener("click", deletePhotos);
+// Attach event listeners to the buttons
+startSessionButton.addEventListener("click", startSession); // Start the session
+capturePhotoButton.addEventListener("click", capturePhoto); // Capture a photo with overlay
+endSessionButton.addEventListener("click", endSession); // End the session
+sharePhotosButton.addEventListener("click", sharePhotos); // Share all photos
+deletePhotosButton.addEventListener("click", deletePhotos); // Delete all photos after sharing
