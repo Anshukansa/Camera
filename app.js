@@ -70,6 +70,24 @@ function requestLocationPermission() {
     });
 }
 
+// Function to get address from coordinates
+async function getAddressFromCoordinates(lat, lon) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.display_name) {
+            return data.display_name;
+        } else {
+            return "No address found.";
+        }
+    } catch (error) {
+        return "Error getting address.";
+    }
+}
+
 // Function to start the session
 async function startSession() {
     clearError();
@@ -81,16 +99,16 @@ async function startSession() {
     }
 
     try {
-        await requestLocationPermission(); // This line should not throw any errors
+        await requestLocationPermission(); // Ensure this does not throw errors
 
         sessionActive = true;
         capturePhotoButton.disabled = false;
         endSessionButton.disabled = false;
-        sharePhotosButton.disabled = true; // No photos initially
-        deletePhotosButton.disabled = true; // No photos initially
-        photos = []; // Reset photos array
+        sharePhotosButton.disabled = true;
+        deletePhotosButton.disabled = true;
+        photos = []; // Clear previous photos
         photoGallery.innerHTML = ""; // Clear gallery
-        lastCapturedPhoto.innerHTML = ""; // Clear last photo display
+        lastCapturedPhoto.innerHTML = ""; // Clear last photo
 
     } catch (error) {
         showError("Error starting session: " + error.message);
@@ -114,10 +132,10 @@ async function capturePhoto() {
 
         const currentDateTime = new Date().toLocaleString();
 
-        const position = await requestLocationPermission();
+        const position = await requestLocationPermission(); // Ensure location permission is handled
         const { latitude, longitude } = position.coords;
 
-        const address = await getAddressFromCoordinates(latitude, longitude);
+        const address = await getAddressFromCoordinates(latitude, longitude); // Ensure this function is defined
 
         context.fillStyle = "white";
         context.font = "15px Arial";
@@ -129,7 +147,7 @@ async function capturePhoto() {
 
         photos.push(file);
 
-        // Show the last captured photo separately
+        // Show only the last captured photo separately
         lastCapturedPhoto.innerHTML = ""; // Clear previous content
         const lastPhotoImg = document.createElement("img");
         lastPhotoImg.src = URL.createObjectURL(photoBlob);
@@ -137,7 +155,7 @@ async function capturePhoto() {
         lastCapturedPhoto.appendChild(lastPhotoImg);
 
         photoGallery.appendChild(lastPhotoImg); // Add to gallery
-        sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
+        sharePhotosButton.disabled = false; // Enable share button when there is at least one photo
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
@@ -157,18 +175,8 @@ function endSession() {
     deletePhotosButton.disabled = photos.length === 0;
 }
 
-// Function to delete all photos
-function deletePhotos() {
-    if (confirm("Are you sure you want to delete all photos?")) {
-        photos = [];
-        photoGallery.innerHTML = "";
-        lastCapturedPhoto.innerHTML = ""; // Clear last photo display
-        sharePhotosButton.disabled = true; // Disable share button after deleting
-    }
-}
-
 // Event listeners for the buttons
-startSessionButton.addEventListener("click", startSession); // Ensure this is correctly attached
+startSessionButton.addEventListener("click", startSession);
 capturePhotoButton.addEventListener("click", capturePhoto);
 endSessionButton.addEventListener("click", endSession);
 sharePhotosButton.addEventListener("click", sharePhotos);
