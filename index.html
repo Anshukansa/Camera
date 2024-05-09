@@ -17,11 +17,12 @@
         <button id="deletePhotos" disabled>Delete All Photos</button> <!-- Disabled initially -->
     </div>
 
-<!-- Add video and canvas elements -->
-<video id="video" autoplay></video>
-<canvas id="canvas" style="display: none;"></canvas>
+    <!-- Video and Canvas for photo capture -->
+    <div>
+        <video id="video" autoplay></video> <!-- Camera stream -->
+        <canvas id="canvas" style="display: none;"></canvas> <!-- For drawing photos -->
+    </div>
 
-    
     <!-- Photo gallery to display captured photos -->
     <div id="photo-gallery"></div>
 
@@ -29,6 +30,6 @@
     <div id="error-message"></div>
 
     <!-- Link to the JavaScript file for functionality -->
-    <script src="app.js"></script>
+    <script src="app.js"></script> <!-- Ensure correct script link -->
 </body>
 </html>
