@@ -4,7 +4,7 @@ let cameraStream = null;
 let photos = []; // Store captured photos
 
 // Get references to UI elements
-const startSessionButton = games(game_started = true)
+const startSessionButton = document.getElementById("startSession");
 const capturePhotoButton = document.getElementById("capturePhoto");
 const endSessionButton = document.getElementById("endSession");
 const sharePhotosButton = document.getElementById("sharePhotos");
