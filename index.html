@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Camera Website with Time and Location</title>
+    <title>Camera with Location Information</title>
     <style>
         /* Styling for the video, canvas, and buttons */
         #video {
@@ -45,27 +45,48 @@
                 console.error('Error accessing webcam:', error);
             });
 
-        // Get the current time and date from an online source
+        // Get the current time and date
         function getCurrentDateTime() {
             const now = new Date();
             return now.toLocaleString(); // Returns current date and time in a human-readable format
         }
 
-        // Function to add location data on the photo
+        // Reverse geocode coordinates to get a human-readable location
+        function getReadableLocation(latitude, longitude, callback) {
+            const apiKey = 'YOUR_OPENCAGE_API_KEY'; // Use your OpenCage API key
+            const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`;
+
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.results && data.results.length > 0) {
+                        const location = data.results[0].formatted; // Get the formatted address
+                        callback(location);
+                    } else {
+                        callback('Location not found');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching location:', error);
+                    callback('Location not found');
+                });
+        }
+
+        // Function to get the user's location and reverse geocode it
         function getLocation(callback) {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const { latitude, longitude } = position.coords;
-                        callback(`Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`);
+                        getReadableLocation(latitude, longitude, callback);
                     },
                     (error) => {
                         console.error('Error accessing location:', error);
-                        callback('Location not available');
+                        callback('Location not found');
                     }
                 );
             } else {
-                callback('Location not available');
+                callback('Location not found');
             }
         }
 
