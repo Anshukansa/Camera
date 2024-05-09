@@ -1,15 +1,13 @@
-// Variables to manage the photo session
+// Variables for session and webcam access
+let videoStream = null;
 let sessionActive = false;
-let photos = []; // Store the captured photos
 
-// Get references to UI elements
-const startSessionButton = document.getElementById('start-session');
-const capturePhotoButton = document.getElementById('capture-photo');
-const endSessionButton = document.getElementById('end-session');
-const sharePhotosButton = document.getElementById('share-photos');
-const deletePhotosButton = document.getElementById('delete-photos');
-const photoGallery = document.getElementById('photo-gallery');
-const errorMessage = document.getElementById('error-message'); // For error messages
+// UI elements
+const videoElement = document.getElementById("video");
+const canvasElement = document.getElementById("canvas");
+const context = canvasElement.getContext("2d");
+const takePictureButton = document.getElementById("takePicture");
+const errorMessage = document.getElementById("error-message");
 
 // Function to clear error messages
 function clearError() {
@@ -18,153 +16,95 @@ function clearError() {
 
 // Function to show error messages
 function showError(message) {
-    errorMessage.textContent = message; // Display the error message
+    errorMessage.textContent = message; // Display the error message to the user
 }
 
-// Function to start the session
-async function startSession() {
-    clearError(); // Clear any existing error messages
-    
-    // Ensure the browser supports camera and location
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        showError("Camera is not supported on this device or browser.");
-        return;
-    }
-
+// Function to request camera access
+async function requestCameraAccess() {
     try {
-        // Request camera permissions
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-
-        // Start the session and release the camera
-        sessionActive = true;
-        capturePhotoButton.disabled = false; // Enable "Capture Photo"
-        endSessionButton.disabled = false; // Enable "End Session"
-        sharePhotosButton.disabled = true; // Keep "Share Photos" disabled initially
-        deletePhotosButton.disabled = true; // Keep "Delete Photos" disabled
-        stream.getTracks().forEach(track => track.stop()); // Release the camera
-
-        // Reset photo storage and gallery
-        photos = [];
-        photoGallery.innerHTML = '';
+        videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        videoElement.srcObject = videoStream; // Display the video stream
+        return true; // Camera access granted
     } catch (error) {
-        showError("Camera access is required. Please grant permission."); // Handle camera access error
-        return;
+        showError("Error accessing webcam: " + error.message); // Handle camera access error
+        return false; // Camera access denied
     }
 }
 
-// Function to capture a photo and add overlay information
-async function capturePhoto() {
-    clearError(); // Clear existing error messages
-
-    if (!sessionActive) return; // Ensure session is active
-
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        const track = stream.getVideoTracks()[0];
-        const imageCapture = new ImageCapture(track);
-        const photoBlob = await imageCapture.takePhoto();
-
-        // Get the current date/time
-        const currentTime = new Date().toLocaleString();
-
-        // Get location information
-        const position = await requestLocation();
-        const { latitude, longitude } = position.coords;
-
-        // Create a canvas to overlay information on the photo
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-
-        img.onload = () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
-
-            // Draw the captured photo onto the canvas
-            ctx.drawImage(img, 0, 0);
-
-            // Add overlay information in the bottom-left corner
-            ctx.fillStyle = 'white'; // White text for visibility
-            ctx.font = '16px Arial'; // Font style
-            const overlayText = `Date: ${currentTime}, Lat: ${latitude.toFixed(4)}, Long: ${longitude.toFixed(4)}`;
-
-            ctx.fillText(overlayText, 10, canvas.height - 10); // Position the text
-
-            // Convert the canvas to a data URL
-            const overlayedPhoto = canvas.toDataURL();
-
-            // Add the photo to the photo gallery
-            const displayImage = document.createElement('img');
-            displayImage.src = overlayedPhoto;
-            displayImage.width = 100; // Display width
-            photoGallery.appendChild(displayImage);
-
-            // Store the photo in the photos array
-            photos.push(overlayedPhoto);
-        };
-
-        img.src = URL.createObjectURL(photoBlob); // Load the original photo
-        stream.getTracks().forEach(track => track.stop()); // Stop the stream
-    } catch (error) {
-        showError("Error capturing photo or accessing location: " + error.message); // Handle capture error
+// Function to request location
+function requestLocation(callback) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                callback(position); // Pass the position data
+            },
+            (error) => {
+                showError("Error getting geolocation: " + error.message); // Handle error
+                callback(null); // No location data
+            }
+        );
+    } else {
+        showError("Geolocation not supported.");
+        callback(null); // Geolocation not supported
     }
 }
 
-// Function to request location information
-function requestLocation() {
-    return new Promise((resolve, reject) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => resolve(position), // Resolve with location data
-                (error) => reject(new Error("Location permission denied."))
-            );
+// Function to get address from coordinates using OpenStreetMap Nominatim
+function getAddressFromCoordinates(lat, lon, callback) {
+    if (lat && lon) {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                const address = data.display_name || "Location not found.";
+                callback(address);
+            })
+            .catch((error) => {
+                showError("Error fetching address: " + error.message); // Handle error
+                callback("Error fetching address.");
+            });
+    } else {
+        callback("Location not found.");
+    }
+}
+
+// Function to get the current date and time
+function getCurrentDateTime() {
+    const now = new Date();
+    return now.toLocaleString(); // Returns current date and time in a readable format
+}
+
+// Event listener to capture a photo
+takePictureButton.addEventListener("click", () => {
+    if (!videoStream) {
+        requestCameraAccess(); // Ensure camera access
+    }
+
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
+
+    // Draw the current video frame onto the canvas
+    context.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
+
+    // Get the current date/time
+    const currentDateTime = getCurrentDateTime();
+
+    // Request location information and add it to the photo
+    requestLocation((position) => {
+        if (position) {
+            const { latitude, longitude } = position.coords;
+            getAddressFromCoordinates(latitude, longitude, (address) => {
+                context.font = "20px Arial";
+                context.fillStyle = "white"; // White text for visibility
+                context.fillText(currentDateTime, 10, 30); // Display date/time
+                context.fillText(address, 10, 60); // Display location address
+
+                canvasElement.style.display = "block"; // Display the canvas
+            });
         } else {
-            reject(new Error("Geolocation is not supported on this device or browser."));
+            context.fillText(currentDateTime, 10, 30); // Display date/time
+            context.fillText("Location not found.", 10, 60); // No location data
         }
     });
-}
-
-// Function to end the session and enable share and delete options
-function endSession() {
-    sessionActive = false; // Mark the session as inactive
-    capturePhotoButton.disabled = true; // Disable "Capture Photo"
-    endSessionButton.disabled = true; // Disable "End Session"
-    startSessionButton.style.display = 'block'; // Show "Start Session" again
-
-    if (photos.length === 0) {
-        showError("No photos to share or delete."); // If there are no photos, inform the user
-        return;
-    }
-
-    // Enable the "Share Photos" and "Delete All Photos" buttons
-    sharePhotosButton.disabled = false;
-    deletePhotosButton.disabled = false;
-}
-
-// Function to share photos
-function sharePhotos() {
-    clearError();
-
-    if (photos.length === 0) {
-        showError("No photos to share."); // If there are no photos, return
-        return;
-    }
-
-    // Open each photo in a new tab for sharing
-    photos.forEach((photo, index) => {
-        window.open(photo, `_blank${index}`); // Open the photo in a new tab
-    });
-}
-
-// Function to delete all photos after sharing
-function deletePhotos() {
-    photoGallery.innerHTML = ''; // Clear the photo gallery
-    photos = []; // Clear the photos array
-}
-
-// Event listeners for buttons
-startSessionButton.addEventListener('click', startSession); // Start the session
-capturePhotoButton.addEventListener('click', capturePhoto); // Capture a photo with overlay
-endSessionButton.addEventListener('click', endSession); // End the session
-sharePhotosButton.addEventListener('click', sharePhotos); // Share all photos
-deletePhotosButton.addEventListener('click', deletePhotos); // Delete all photos
+});
