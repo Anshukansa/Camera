@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Photo Capture with Location Overlay</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For icons -->
-    <link rel="stylesheet" href="style.css"> <!-- Updated CSS styling -->
+    <link rel="stylesheet" href="style.css"> <!-- CSS for styling -->
 </head>
 <body>
     <h1>Photo Capture with Location Overlay</h1>
@@ -39,15 +39,18 @@
     </div>
 
     <!-- Last Captured Photo -->
-    <div id="last-captured-photo"></div>
+    <div id="last-captured-photo" class="last-photo-container"></div>
 
     <!-- Error message display area -->
     <div id="error-message"></div>
 
-    <!-- Photo gallery to display captured photos -->
-    <div id="photo-gallery" class="photo-grid"></div>
+    <!-- Photo gallery section (separate from main page) -->
+    <div id="photo-gallery-section">
+        <h2>Photo Gallery</h2>
+        <div id="photo-gallery" class="photo-grid"></div>
+    </div>
 
-    <!-- Link to the updated JavaScript file -->
+    <!-- Link to JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>
