@@ -146,7 +146,7 @@ async function capturePhoto() {
 
         const imgElement = document.createElement("img");
         imgElement.src = URL.createObjectURL(photoBlob);
-        imgElement.style.margin = "10px";
+        imgElement.className = "photo-thumbnail"; // Styled thumbnail
         photoGallery.appendChild(imgElement);
 
         sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
@@ -164,9 +164,9 @@ function endSession() {
 
     sessionActive = false;
     capturePhotoButton.disabled = true;
-    endSessionButton.disabled = true;
-    sharePhotosButton.disabled = photos.length === 0;
+    endSessionButton.disabled;
     deletePhotosButton.disabled = photos.length === 0;
+    sharePhotosButton.disabled = photos.length === 0;
 }
 
 // Function to share all photos
@@ -195,9 +195,11 @@ async function sharePhotos() {
 
 // Function to delete all photos
 function deletePhotos() {
-    photos = [];
-    photoGallery.innerHTML = "";
-    sharePhotosButton.disabled = true; // Disable share button after deleting
+    if (confirm("Are you sure you want to delete all photos?")) {
+        photos = [];
+        photoGallery.innerHTML = "";
+        sharePhotosButton.disabled = true; // Disable share button after deleting
+    }
 }
 
 // Event listeners for the buttons
