@@ -1,104 +1,159 @@
-// Check if getUserMedia is supported by the browser
-function isCameraSupported() {
-    return !!navigator.mediaDevices && !!navigator.mediaDevices.getUserMedia;
+// Variables to manage the session and photo storage
+let photos = [];
+let sessionActive = false;
+
+// Get references to UI elements
+const startSessionButton = document.getElementById('start-session');
+const capturePhotoButton = document.getElementById('capture-photo');
+const endSessionButton = document.getElementById('end-session');
+const photoGallery = document.getElementById('photo-gallery');
+const errorMessage = document.getElementById('error-message');
+
+// Check if the browser supports camera and geolocation
+function isSupported() {
+    return (
+        navigator.mediaDevices && navigator.mediaDevices.getUserMedia &&
+        navigator.geolocation
+    );
 }
 
-// Function to request camera permissions
+// Request camera permissions and location permissions
 async function requestPermissions() {
-    clearError(); // Clear any previous error messages
+    clearError(); // Clear any existing error messages
     
-    if (!isCameraSupported()) {
-        showError("Camera is not supported on this device or browser."); // If the browser or device doesn't support it
+    if (!isSupported()) {
+        showError("Camera and geolocation are not supported on this device or browser.");
         return;
     }
 
     try {
-        // Request camera access, which triggers the browser's permission prompt
+        // Request camera access
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-        // If successful, start the session
+        // If successful, start the session and stop the stream
         startSession();
-
-        // Stop the stream immediately to release the camera
-        stream.getTracks().forEach((track) => track.stop());
+        stream.getTracks().forEach(track => track.stop());
     } catch (error) {
-        // If permission is denied or there's another error, inform the user
-        showError("Camera access is required. Please grant permission.");
+        showError("Camera access is required. Please grant permission."); // Handle permission error
+        return;
+    }
+
+    try {
+        // Request location access
+        await requestLocation();
+    } catch (error) {
+        showError("Location access is required. Please grant permission."); // Handle location error
     }
 }
 
-// Function to start the session
-function startSession() {
-    const startSessionButton = document.getElementById('start-session');
-    const capturePhotoButton = document.getElementById('capture-photo');
-    const endSessionButton = document.getElementById('end-session');
-    
-    startSessionButton.style.display = 'none'; // Hide the start session button
-    capturePhotoButton.disabled = false; // Enable the "Capture Photo" button
-    endSessionButton.disabled = false; // Enable the "End Session" button
-    
-    // You can initialize other session-related logic here if needed
+// Request location information
+function requestLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => resolve(position), // On success, return the position
+                (error) => reject(new Error("Location permission denied."))
+            );
+        } else {
+            reject(new Error("Geolocation is not supported on this device or browser."));
+        }
+    });
 }
 
-// Capture photo with error handling
+// Start the session
+function startSession() {
+    sessionActive = true; // Mark the session as active
+    startSessionButton.style.display = 'none'; // Hide the start session button
+    capturePhotoButton.disabled = false; // Enable the capture photo button
+    endSessionButton.disabled = false; // Enable the end session button
+}
+
+// Capture a photo and get location
 async function capturePhoto() {
-    clearError(); // Clear any previous error messages
+    clearError(); // Clear existing error messages
+    
+    if (!sessionActive) return; // Ensure session is active
 
     try {
-        // Access the camera to capture a photo
+        // Access the camera and capture a photo
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         const track = stream.getVideoTracks()[0];
         const imageCapture = new ImageCapture(track);
         const photoBlob = await imageCapture.takePhoto();
 
-        const photoGallery = document.getElementById('photo-gallery');
+        // Add the photo to the photos array
+        photos.push(photoBlob);
 
-        // Display the photo in the gallery
+        // Display the captured photo in the gallery
         const img = document.createElement('img');
-        img.src = URL.createObjectURL(photoBlob); // Create a URL for the photo
-        img.width = 100; // Set the width for display
+        img.src = URL.createObjectURL(photoBlob);
+        img.width = 100; // Set the width for gallery display
         photoGallery.appendChild(img);
 
         // Stop the stream to release the camera
-        stream.getTracks().forEach((track) => track.stop());
+        stream.getTracks().forEach(track => track.stop());
+
+        // Get location information
+        const position = await requestLocation();
+        const { latitude, longitude } = position.coords;
+        console.log("Captured photo at location:", { latitude, longitude });
     } catch (error) {
-        // Handle errors during photo capture
-        showError("Error capturing photo: " + error.message);
+        showError("Error capturing photo or accessing location: " + error.message);
     }
 }
 
-// Function to end the session
+// End the session, offering options to share and delete photos
 function endSession() {
-    const startSessionButton = document.getElementById('start-session');
-    const capturePhotoButton = document.getElementById('capture-photo');
-    const endSessionButton = document.getElementById('end-session');
-
-    capturePhotoButton.disabled = true; // Disable photo capture
-    endSessionButton.disabled = true; // Disable ending the session
+    capturePhotoButton.disabled = true; // Disable the capture photo button
+    endSessionButton.disabled = true; // Disable the end session button
     startSessionButton.style.display = 'block'; // Show the start session button again
 
-    // You can add logic here for sharing photos, and optionally deleting them
+    if (photos.length === 0) {
+        alert("No photos to share or delete.");
+        return;
+    }
 
-    // Optionally, clear the photo gallery and other session-related data
+    // Ask if the user wants to share the photos
+    const shareOption = confirm("Do you want to share all photos?");
+    if (shareOption) {
+        sharePhotos(); // Share the photos
+    }
+
+    // Ask if the user wants to delete the photos after sharing
+    const deleteOption = confirm("Do you want to delete all photos after sharing?");
+    if (deleteOption) {
+        deletePhotos(); // Delete all captured photos
+    }
+}
+
+// Share the photos (using opening new tabs for sharing)
+function sharePhotos() {
+    alert("Sharing all captured photos. You may need to save or share them now.");
+
+    photos.forEach((photo, index) => {
+        const url = URL.createObjectURL(photo);
+        window.open(url, `_blank${index}`); // Open each photo in a new tab for sharing
+    });
+}
+
+// Delete all photos
+function deletePhotos() {
+    photoGallery.innerHTML = ''; // Clear the photo gallery
+    photos = []; // Clear the photos array
+    console.log("All photos have been deleted.");
 }
 
 // Function to show error messages to the user
 function showError(message) {
-    const errorMessage = document.getElementById('error-message');
-    errorMessage.textContent = message; // Display the error message
+    errorMessage.textContent = message; // Display the error message in the UI
 }
 
 // Function to clear error messages
 function clearError() {
-    const errorMessage = document.getElementById('error-message');
     errorMessage.textContent = ''; // Clear any existing error messages
 }
 
-// Add event listeners to buttons
-const startSessionButton = document.getElementById('start-session');
-const capturePhotoButton = document.getElementById('capture-photo');
-const endSessionButton = document.getElementById('end-session');
-
-startSessionButton.addEventListener('click', requestPermissions); // Request permissions and start the session
+// Add event listeners to the buttons
+startSessionButton.addEventListener('click', requestPermissions); // Start session and request permissions
 capturePhotoButton.addEventListener('click', capturePhoto); // Capture a photo
-endSessionButton.addEventListener('click', endSession); // End the session
+endSessionButton.addEventListener('click', endSession); // End the session with sharing and deletion options
