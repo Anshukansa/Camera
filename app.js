@@ -4,7 +4,7 @@ let cameraStream = null;
 let photos = []; // Store captured photos
 
 // Get references to UI elements
-const startSessionButton = document.getElementById("startSession");
+const startSessionButton = games(game_started = true)
 const capturePhotoButton = document.getElementById("capturePhoto");
 const endSessionButton = document.getElementById("endSession");
 const sharePhotosButton = document.getElementById("sharePhotos");
@@ -12,7 +12,7 @@ const deletePhotosButton = document.getElementById("deletePhotos");
 const videoElement = document.getElementById("video");
 const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
-const photoGallery = document.getElementById("photo-gallery");
+const latestPhotoImg = document.getElementById("latest-photo-img");
 const errorMessage = document.getElementById("error-message");
 
 // Function to clear error messages
@@ -105,7 +105,7 @@ async function startSession() {
         sharePhotosButton.disabled = true;
         deletePhotosButton.disabled = true;
         photos = [];
-        photoGallery.innerHTML = "";
+        latestPhotoImg.src = ""; // Clear the latest photo
 
     } catch (error) {
         showError("Error starting session: " + error.message);
@@ -144,10 +144,8 @@ async function capturePhoto() {
 
         photos.push(file);
 
-        const imgElement = document.createElement("img");
-        imgElement.src = URL.createObjectURL(photoBlob);
-        imgElement.className = "photo-thumbnail"; // Styled thumbnail
-        photoGallery.appendChild(imgElement);
+        // Update the latest photo display
+        latestPhotoImg.src = URL.createObjectURL(photoBlob);
 
         sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
 
@@ -164,9 +162,9 @@ function endSession() {
 
     sessionActive = false;
     capturePhotoButton.disabled = true;
-    endSessionButton.disabled;
-    deletePhotosButton.disabled = photos.length === 0;
+    endSessionButton.disabled = true;
     sharePhotosButton.disabled = photos.length === 0;
+    deletePhotosButton.disabled = photos.length === 0;
 }
 
 // Function to share all photos
@@ -186,7 +184,7 @@ async function sharePhotos() {
                 text: "Here are the photos I took!",
             });
         } catch (error) {
-            showError("Error sharing photos: " + error.message);
+            showError("Error sharing photos: " + error message.");
         }
     } else {
         showError("Web Share API does not support sharing files in this browser.");
@@ -197,7 +195,7 @@ async function sharePhotos() {
 function deletePhotos() {
     if (confirm("Are you sure you want to delete all photos?")) {
         photos = [];
-        photoGallery.innerHTML = "";
+        latestPhotoImg.src = ""; // Clear the latest photo
         sharePhotosButton.disabled = true; // Disable share button after deleting
     }
 }
