@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera with Time and Location</title>
+    <style>
+        /* Basic styling for the video, canvas, and buttons */
+        #video {
+            width: 640px;
+            height: 480px;
+            border: 2px solid black;
+        }
+        #canvas {
+            border: 2px solid black;
+            width: 640px;
+            height: 480px;
+            display: none;
+        }
+        #takePicture {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function requestLocation(callback) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        callback(latitude, longitude);
+                    },
+                    (error) => {
+                        console.error("Error getting geolocation:", error);
+                        callback(null, null);
+                    }
+                );
+            } else {
+                console.error("Geolocation not supported.");
+                callback(null, null);
+            }
+        }
+
+        function getAddressFromCoordinates(lat, lon, callback) {
+            if (lat && lon) {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+                fetch(url)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const address = data.display_name || "Location not found.";
+                        callback(address);
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching address:", error);
+                        callback("Error fetching address.");
+                    });
+            } else {
+                callback("Location not found.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Camera with Time and Location</h1>
+    <!-- Video element to display webcam feed -->
+    <video id="video" autoplay></video>
+    <!-- Button to take a picture -->
+    <button id="takePicture">Take Picture</button>
+    <!-- Canvas to display the snapshot -->
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const context = canvas.getContext("2d");
+        const takePictureButton = document.getElementById("takePicture");
+
+        // Access the webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error("Error accessing webcam:", error);
+            });
+
+        // Get the current time and date
+        function getCurrentDateTime() {
+            const now = new Date();
+            return now.toLocaleString(); // Returns current date and time in a human-readable format
+        }
+
+        // Function to take a picture and add date, time, and location
+        takePictureButton.addEventListener("click", () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            // Draw the current video frame on the canvas
+            context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
+            // Get the current date and time
+            const currentDateTime = getCurrentDateTime();
+
+            // Get the location and add it to the photo
+            requestLocation((latitude, longitude) => {
+                getAddressFromCoordinates(latitude, longitude, (address) => {
+                    context.font = "20px Arial";
+                    context.fillStyle = "white";
+                    context.fillText(currentDateTime, 10, 30); // Display date/time
+                    context.fillText(address, 10, 60); // Display location
+
+                    // Display the canvas
+                    canvas.style.display = "block";
+                });
+            });
+        });
+    </script>
+</body>
+</html>
