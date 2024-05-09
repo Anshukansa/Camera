@@ -156,8 +156,8 @@ function deletePhotos() {
 }
 
 // Attach event listeners for buttons
-startSessionButton.addEventListener("click", startSession); // Start the session and request permissions
-capturePhotoButton.addEventListener("click", capturePhoto); // Capture a photo with overlay information
-endSessionButton.addEventListener("click", endSession); // End the session
-sharePhotosButton.addEventListener("click", sharePhotos); // Share all photos
-deletePhotosButton.addEventListener("click", deletePhotos); // Delete all photos after sharing
+document.getElementById("startSession").addEventListener("click", startSession);
+document.getElementById("capturePhoto").addEventListener("click", capturePhoto);
+document.getElementById("endSession").addEventListener("click", endSession);
+document.getElementById("sharePhotos").addEventListener("click", sharePhotos);
+document.getElementById("deletePhotos").addEventListener("click", deletePhotos);
