@@ -2,19 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Camera Website</title>
+    <title>Camera Website with Time and Location</title>
     <style>
-        /* Basic styling for the camera and buttons */
-        #camera {
-            width: 100%;
-            height: auto;
-        }
+        /* Styling for the video, canvas, and buttons */
         #video {
             width: 640px;
             height: 480px;
             border: 2px solid black;
         }
-        #snapshot {
+        #canvas {
             border: 2px solid black;
             width: 640px;
             height: 480px;
@@ -26,32 +22,54 @@
     </style>
 </head>
 <body>
-    <h1>Simple Camera Website</h1>
+    <h1>Camera with Time and Location</h1>
     <!-- Video element to display webcam feed -->
     <video id="video" autoplay></video>
     <!-- Button to take a picture -->
     <button id="takePicture">Take Picture</button>
-    <!-- Canvas to display the taken picture -->
-    <canvas id="snapshot"></canvas>
+    <!-- Canvas to display the snapshot -->
+    <canvas id="canvas"></canvas>
 
     <script>
-        // Select video and canvas elements
         const video = document.getElementById('video');
-        const canvas = document.getElementById('snapshot');
+        const canvas = document.getElementById('canvas');
         const context = canvas.getContext('2d');
         const takePictureButton = document.getElementById('takePicture');
 
         // Access the webcam
         navigator.mediaDevices.getUserMedia({ video: true })
             .then((stream) => {
-                // Attach the webcam stream to the video element
                 video.srcObject = stream;
             })
             .catch((error) => {
                 console.error('Error accessing webcam:', error);
             });
 
-        // Take a picture when the button is clicked
+        // Get the current time and date from an online source
+        function getCurrentDateTime() {
+            const now = new Date();
+            return now.toLocaleString(); // Returns current date and time in a human-readable format
+        }
+
+        // Function to add location data on the photo
+        function getLocation(callback) {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        callback(`Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`);
+                    },
+                    (error) => {
+                        console.error('Error accessing location:', error);
+                        callback('Location not available');
+                    }
+                );
+            } else {
+                callback('Location not available');
+            }
+        }
+
+        // Take a picture and add date, time, and location
         takePictureButton.addEventListener('click', () => {
             // Set canvas size to match the video
             canvas.width = video.videoWidth;
@@ -60,8 +78,20 @@
             // Draw the current video frame on the canvas
             context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 
-            // Display the taken picture
-            canvas.style.display = 'block';
+            // Get the current date and time
+            const currentDateTime = getCurrentDateTime();
+
+            // Get the location and add it to the photo
+            getLocation((location) => {
+                // Set the text font and color
+                context.font = '20px Arial';
+                context.fillStyle = 'white';
+                context.fillText(currentDateTime, 10, 30); // Display date/time in the top-left corner
+                context.fillText(location, 10, 60); // Display location below the date/time
+
+                // Display the canvas
+                canvas.style.display = 'block';
+            });
         });
     </script>
 </body>
