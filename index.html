@@ -1,28 +1,26 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Photo Session</title>
-    <!-- Link to external CSS for styling -->
-    <link rel="stylesheet" href="style.css">
+    <title>Photo Capture with Location Overlay</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to CSS for styling -->
 </head>
 <body>
-    <h1>Photo Session</h1>
+    <h1>Photo Capture with Location Overlay</h1>
 
-    <!-- Session controls -->
+    <!-- Buttons for session management and photo capturing -->
     <div id="controls">
         <button id="start-session">Start Session</button>
-        <button id="capture-photo" disabled>Capture Photo</button>
-        <button id="end-session" disabled>End Session</button>
-        <button id="share-photos" disabled>Share Photos</button>
-        <button id="delete-photos" disabled>Delete All Photos</button>
+        <button id="capture-photo" disabled>Capture Photo</button> <!-- Disabled initially -->
+        <button id="end-session" disabled>End Session</button> <!-- Disabled initially -->
+        <button id="share-photos" disabled>Share Photos</button> <!-- Disabled until photos are captured -->
+        <button id="delete-photos" disabled>Delete All Photos</button> <!-- Disabled initially -->
     </div>
 
-    <!-- Photo gallery for displaying captured photos -->
+    <!-- Photo gallery to display captured photos -->
     <div id="photo-gallery"></div>
 
-    <!-- Area for displaying error messages or instructions -->
+    <!-- Error message display area -->
     <div id="error-message"></div>
 
     <!-- Link to the JavaScript file for functionality -->
