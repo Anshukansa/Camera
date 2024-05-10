@@ -14,6 +14,7 @@ const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
 const photoGallery = document.getElementById("photo-gallery");
 const errorMessage = document.getElementById("error-message");
+const viewGalleryButton = document.getElementById("viewGallery");
 
 // Function to clear error messages
 function clearError() {
@@ -230,4 +231,4 @@ capturePhotoButton.addEventListener("click", capturePhoto);
 endSessionButton.addEventListener("click", endSession);
 sharePhotosButton.addEventListener("click", sharePhotos);
 deletePhotosButton.addEventListener("click", deletePhotos);
-const viewGalleryButton = document.getElementById("viewGallery");
+
