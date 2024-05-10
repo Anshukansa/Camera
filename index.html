@@ -41,14 +41,19 @@
     <!-- Last Captured Photo -->
     <div id="last-captured-photo" class="last-photo-container"></div>
 
-    <!-- Error message display area -->
-    <div id="error-message"></div>
+    <!-- Button to toggle the gallery -->
+    <button id="toggleGalleryButton" title="Show/Hide Photo Gallery">
+        <i class="fas fa-images"></i> Show Gallery
+    </button>
 
-    <!-- Photo gallery section (separate from main page) -->
-    <div id="photo-gallery-section">
+    <!-- Photo gallery section, initially hidden -->
+    <div id="photo-gallery-section" style="display: none;">
         <h2>Photo Gallery</h2>
         <div id="photo-gallery" class="photo-grid"></div>
     </div>
+
+    <!-- Error message display area -->
+    <div id="error-message"></div>
 
     <!-- Link to JavaScript -->
     <script src="app.js"></script>
