@@ -95,6 +95,11 @@ async function getAddressFromCoordinates(lat, lon) {
 // IndexedDB functions
 
 
+const DB_NAME = "PhotoCaptureApp";
+const SESSION_STORE = "session_photos";
+const ALL_PHOTOS_STORE = "all_photos";
+const DB_VERSION = 1;
+
 function openDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -102,19 +107,19 @@ function openDB() {
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
 
-            // Ensure session_photos object store exists
+            // Create session_photos object store if it doesn't exist
             if (!db.objectStoreNames.contains(SESSION_STORE)) {
                 db.createObjectStore(SESSION_STORE, { keyPath: "id", autoIncrement: true });
             }
 
-            // Ensure all_photos object store exists
+            // Create all_photos object store if it doesn't exist
             if (!db.objectStoreNames.contains(ALL_PHOTOS_STORE)) {
                 db.createObjectStore(ALL_PHOTOS_STORE, { keyPath: "id", autoIncrement: true });
             }
         };
 
-        request.onsuccess = () => {
-            resolve(request.result);
+        request.onsuccess = (event) => {
+            resolve(event.target.result);
         };
 
         request.onerror = (event) => {
@@ -122,6 +127,7 @@ function openDB() {
         };
     });
 }
+
 
 
 // Function to save a photo in the specified object store
