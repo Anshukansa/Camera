@@ -19,6 +19,8 @@ const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
 const photoGallery = document.getElementById("photo-gallery");
 const errorMessage = document.getElementById("error-message");
+const deleteAllPhotosButton = document.getElementById("deleteAllPhotos");
+
 
 // Function to clear error messages
 function clearError() {
@@ -286,6 +288,21 @@ async function deleteSessionPhotos() {
     }
 }
 
+// Function to delete all photos
+async function deleteAllPhotos() {
+    if (confirm("Are you sure you want to delete all photos?")) {
+        try {
+            await clearStore(ALL_PHOTOS_STORE_NAME); // Clear all photos from IndexedDB
+            loadAllPhotos(); // Reload the gallery to reflect the changes
+            deleteAllPhotosButton.disabled = true; // Disable delete button after clearing
+            sharePhotosButton.disabled = true; // Disable share button after clearing
+        } catch (error) {
+            showError("Error deleting all photos: " + error.message);
+        }
+    }
+}
+
+
 // Function to load all photos from the all_photos store
 async function loadAllPhotos() {
     try {
@@ -302,6 +319,7 @@ async function loadAllPhotos() {
 
         if (allPhotos.length > 0) {
             sharePhotosButton.disabled = false; // Enable share button if there are photos to share
+            deleteAllPhotosButton.disabled = false; // Enable delete button if there are photos
         }
 
     } catch (error) {
@@ -309,11 +327,13 @@ async function loadAllPhotos() {
     }
 }
 
+
 // Event listeners for the buttons
 startSessionButton.addEventListener("click", startSession); // Start the session
 capturePhotoButton.addEventListener("click", capturePhoto); // Capture a photo
 endSessionButton.addEventListener("click", endSession); // End the session
 deleteSessionPhotosButton.addEventListener("click", deleteSessionPhotos); // Delete session photos
+deleteAllPhotosButton.addEventListener("click", deleteAllPhotos);// Delete all photos
 sharePhotosButton.addEventListener("click", async () => {
     const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
 
