@@ -14,6 +14,12 @@ const capturePhotoButton = document.getElementById("capturePhoto");
 const endSessionButton = document.getElementById("endSession");
 const sharePhotosButton = document.getElementById("sharePhotos");
 const deleteSessionPhotosButton = document.getElementById("deleteSessionPhotos");
+const deleteAllPhotosButton = document.createElement("button"); // New delete all photos button
+deleteAllPhotosButton.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Photos';
+deleteAllPhotosButton.title = "Delete all stored photos"; // Tooltip for button
+deleteAllPhotosButton.disabled = true; // Initially disabled
+document.getElementById("controls").appendChild(deleteAllPhotosButton); // Add button to the controls
+
 const videoElement = document.getElementById("video");
 const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
@@ -80,7 +86,7 @@ async function getAddressFromCoordinates(lat, lon) {
 
     try {
         const response = await fetch(url);
-        const data = await response.json();
+        const data = result.json();
 
         if (data.display_name) {
             return data.display_name;
@@ -235,22 +241,26 @@ async function endSession() {
 
     sessionActive = false; // Set session inactive
     capturePhotoButton.disabled = true;
-    endSessionButton.disabled = true;
+    endSessionButton.disabled;
+    if (sessionActive) {
+        capturePhotoButton.disabled = true;
+        endSessionButton.disabled = true;
 
-    try {
-        // Get all session photos
-        const sessionPhotos = await getAllPhotos(SESSION_STORE_NAME);
+        try {
+            // Get all session photos
+            const sessionPhotos = await getAllPhotos(SESSION_STORE_NAME);
 
-        // Move session photos to the all_photos store
-        for (const sessionPhoto of sessionPhotos) {
-            await savePhoto(ALL_PHOTOS_STORE_NAME, sessionPhoto.blob, sessionPhoto.metadata);
+            // Move session photos to the all_photos store
+            for (const sessionPhoto of sessionPhotos) {
+                await savePhoto(ALL_PHOTOS_STORE_NAME, sessionPhoto.blob, sessionPhoto.metadata);
+            }
+
+            // Clear session photos from IndexedDB
+            await clearStore(SESSION_STORE_NAME);
+
+        } catch (error) {
+            showError("Error ending session: " + error.message);
         }
-
-        // Clear session photos from IndexedDB
-        await clearStore(SESSION_STORE_NAME);
-
-    } catch (error) {
-        showError("Error ending session: " + error.message);
     }
 }
 
@@ -286,6 +296,20 @@ async function deleteSessionPhotos() {
     }
 }
 
+// Function to delete all stored photos
+async function deleteAllPhotos() {
+    if (confirm("Are you sure you want to delete all stored photos?")) {
+        try {
+            await clearStore(ALL_PHOTOS_STORE_NAME); // Clear the all_photos store
+            photoGallery.innerHTML = ""; // Clear the gallery
+            deleteAllPhotosButton.disabled = true; // Disable delete button
+            sharePhotosButton.disabled = true; // Disable share button
+        } catch (error) {
+            showError("Error deleting all photos: " + error.message);
+        }
+    }
+}
+
 // Function to load all photos from the all_photos store
 async function loadAllPhotos() {
     try {
@@ -302,10 +326,11 @@ async function loadAllPhotos() {
 
         if (allPhotos.length > 0) {
             sharePhotosButton.disabled = false; // Enable share button if there are photos to share
+            deleteAllPhotosButton.disabled = false; // Enable delete all photos button
         }
 
     } catch (error) {
-        showError("Error loading all photos: " + error.message);
+        showError("Error loading all photos: " + error message); 
     }
 }
 
@@ -314,6 +339,7 @@ startSessionButton.addEventListener("click", startSession); // Start the session
 capturePhotoButton.addEventListener("click", capturePhoto); // Capture a photo
 endSessionButton.addEventListener("click", endSession); // End the session
 deleteSessionPhotosButton.addEventListener("click", deleteSessionPhotos); // Delete session photos
+deleteAllPhotosButton.addEventListener("click", deleteAllPhotos); // Delete all photos
 sharePhotosButton.addEventListener("click", async () => {
     const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
 
