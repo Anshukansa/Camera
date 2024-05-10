@@ -219,7 +219,7 @@ async function capturePhoto() {
         photoGallery.appendChild(imgElement);
 
         sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
-
+        deletePhotosButton.disabled = false;
     } catch (error) {
         showError("Error capturing photo: " + error.message);
     }
