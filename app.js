@@ -4,7 +4,8 @@ let cameraStream = null;
 
 // IndexedDB setup
 const DB_NAME = "PhotoCaptureApp";
-const STORE_NAME = "photos";
+const SESSION_STORE = "session_photos";
+const ALL_PHOTOS_STORE = "all_photos";
 const DB_VERSION = 1;
 
 // Get references to UI elements
@@ -12,7 +13,7 @@ const startSessionButton = document.getElementById("startSession");
 const capturePhotoButton = document.getElementById("capturePhoto");
 const endSessionButton = document.getElementById("endSession");
 const sharePhotosButton = document.getElementById("sharePhotos");
-const deletePhotosButton = document.getElementById("deletePhotos");
+const deleteSessionPhotosButton = document.getElementById("deleteSessionPhotos");
 const videoElement = document.getElementById("video");
 const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
@@ -98,9 +99,11 @@ function openDB() {
 
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-                const objectStore = db.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
-                objectStore.createIndex("timestamp", "timestamp", { unique: false });
+            if (!db.objectStoreNames.contains(SESSION_STORE)) {
+                db.createObjectStore(SESSION_STORE, { keyPath: "id", autoIncrement: true });
+            }
+            if (!db.objectStoreNames.contains(ALL_PHOTOS_STORE)) {
+                db.createObjectStore(ALL_PHOTOS_STORE, { keyPath: "id", autoIncrement: true });
             }
         };
 
@@ -114,11 +117,11 @@ function openDB() {
     });
 }
 
-// Function to save a photo in IndexedDB
-async function savePhoto(photoBlob, metadata) {
+// Function to save a photo in the specified object store
+async function savePhoto(storeName, photoBlob, metadata) {
     const db = await openDB();
-    const transaction = db.transaction(STORE_NAME, "readwrite");
-    const objectStore = transaction.objectStore(STORE_NAME);
+    const transaction = db.transaction(storeName, "readwrite");
+    const objectStore = transaction.objectStore(storeName);
 
     return new Promise((resolve, reject) => {
         const request = objectStore.add({
@@ -137,11 +140,11 @@ async function savePhoto(photoBlob, metadata) {
     });
 }
 
-// Function to retrieve all stored photos from IndexedDB
-async function getAllPhotos() {
+// Function to retrieve all stored photos from the specified object store
+async function getAllPhotos(storeName) {
     const db = await openDB();
-    const transaction = db.transaction(STORE_NAME, "readonly");
-    const objectStore = transaction.objectStore(STORE_NAME);
+    const transaction = db.transaction(storeName, "readonly");
+    const objectStore = transaction.objectStore(storeName);
 
     return new Promise((resolve, reject) => {
         const request = objectStore.getAll();
@@ -171,8 +174,7 @@ async function startSession() {
         sessionActive = true; // Set session active
         capturePhotoButton.disabled = false; // Enable capture button
         endSessionButton.disabled = false; // Enable end session button
-        sharePhotosButton.disabled = true; // Disable sharing initially
-        deletePhotosButton.disabled = true; // Disable delete button
+        deleteSessionPhotosButton.disabled = true; // Disable delete session photos initially
 
         // Reset the photo gallery
         photoGallery.innerHTML = ""; 
@@ -182,7 +184,7 @@ async function startSession() {
     }
 }
 
-// Function to capture a photo
+// Function to capture a photo and save it in the session store
 async function capturePhoto() {
     if (!sessionActive) {
         showError("Session not active. Start the session first.");
@@ -209,8 +211,8 @@ async function capturePhoto() {
 
         const photoBlob = await new Promise((resolve) => canvasElement.toBlob(resolve, "image/png"));
 
-        // Save the photo in IndexedDB with metadata
-        await savePhoto(photoBlob, { timestamp: currentDateTime, location: { latitude, longitude }, address });
+        // Save the photo in the session store
+        await savePhoto(SESSION_STORE, photoBlob, { timestamp: currentDateTime, location: { latitude, longitude }, address });
 
         // Display the captured photo in the gallery
         const imgElement = document.createElement("img");
@@ -218,15 +220,14 @@ async function capturePhoto() {
         imgElement.className = "photo-thumbnail"; // Styled thumbnail
         photoGallery.appendChild(imgElement);
 
-        sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
-        deletePhotosButton.disabled = false;
+        deleteSessionPhotosButton.disabled = false; // Enable delete session photos button
     } catch (error) {
         showError("Error capturing photo: " + error.message);
     }
 }
 
-// Function to end the session
-function endSession() {
+// Function to end the session and move session photos to all_photos
+async function endSession() {
     if (cameraStream) {
         cameraStream.getTracks().forEach((track) => track.stop());
     }
@@ -234,20 +235,57 @@ function endSession() {
     sessionActive = false; // Set session inactive
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
+
+    // Move session photos to all_photos
+    const sessionPhotos = await getAllPhotos(SESSION_STORE);
+    const db = await openDB();
+    const transaction = db.transaction(ALL_PHOTOS_STORE, "readwrite");
+    const objectStore = transaction.objectStore(ALL_PHOTOS_STORE);
+
+    sessionPhotos.forEach(async (photo) => {
+        await savePhoto(ALL_PHOTOS_STORE, photo.blob, photo.metadata);
+    });
+
+    // Clear the session photos after moving them
+    const clearSession = db.transaction(SESSION_STORE, "readwrite");
+    const clearStore = clearSession.objectStore(SESSION_STORE);
+    clearStore.clear();
+
+    deleteSessionPhotosButton.disabled = true; // Disable delete session photos button
+}
+
+// Function to delete all session photos
+async function deleteSessionPhotos() {
+    if (confirm("Are you sure you want to delete all session photos?")) {
+        const db = await openDB();
+        const transaction = db.transaction(SESSION_STORE, "readwrite");
+        const objectStore = transaction.objectStore(SESSION_STORE);
+
+        const request = objectStore.clear();
+
+        request.onsuccess = () => {
+            photoGallery.innerHTML = ""; // Clear the gallery
+            deleteSessionPhotosButton.disabled = true; // Disable delete session photos button
+        };
+
+        request.onerror = (event) => {
+            showError("Error deleting session photos: " + event.target.error.message);
+        };
+    }
 }
 
 // Function to share all photos
 async function sharePhotos() {
     clearError();
 
-    const storedPhotos = await getAllPhotos();
+    const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE);
 
-    if (storedPhotos.length === 0) {
+    if (allPhotos.length === 0) {
         showError("No photos to share.");
         return;
     }
 
-    const photoFiles = storedPhotos.map((photo) => new File([photo.blob], "snapshot.png", { type: "image/png" }));
+    const photoFiles = allPhotos.map((photo) => new File([photo.blob], `photo_${photo.id}.png`, { type: "image/png" }));
 
     if (navigator.canShare && navigator.canShare({ files: photoFiles })) {
         try {
@@ -264,36 +302,16 @@ async function sharePhotos() {
     }
 }
 
-// Function to delete all photos
-async function deletePhotos() {
-    if (confirm("Are you sure you want to delete all photos?")) {
-        const db = await openDB();
-        const transaction = db.transaction(STORE_NAME, "readwrite");
-        const objectStore = transaction.objectStore(STORE_NAME);
-
-        const request = objectStore.clear();
-
-        request.onsuccess = () => {
-            photoGallery.innerHTML = ""; // Clear the gallery
-            sharePhotosButton.disabled = true; // Disable share button after deleting
-        };
-
-        request.onerror = (event) => {
-            showError("Error deleting photos: " + event.target.error.message);
-        };
-    }
-}
-
-// Function to load all photos from IndexedDB
-async function loadPhotos() {
+// Function to load all photos from all_photos store
+async function loadAllPhotos() {
     try {
-        const storedPhotos = await getAllPhotos(); // Get all stored photos
+        const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE);
 
         photoGallery.innerHTML = ""; // Clear existing photos in the gallery
 
-        storedPhotos.forEach((photo) => {
+        allPhotos.forEach((photo) => {
             const imgElement = document.createElement("img");
-            imgElement.src = URL.createObjectURL(photo.blob); // Display the photo
+            imgElement.src = URL.createObjectURL(photo.blob);
             imgElement.className = "photo-thumbnail"; // Styled thumbnail
             photoGallery.appendChild(imgElement);
 
@@ -309,12 +327,12 @@ async function loadPhotos() {
     }
 }
 
-// Load all stored photos when initializing the app
-loadPhotos();
+// Load all photos from the all_photos store when initializing the app
+loadAllPhotos();
 
 // Event listeners for the buttons
 startSessionButton.addEventListener("click", startSession); // Start the session
 capturePhotoButton.addEventListener("click", capturePhoto); // Capture a photo
 endSessionButton.addEventListener("click", endSession); // End the session
 sharePhotosButton.addEventListener("click", sharePhotos); // Share all photos
-deletePhotosButton.addEventListener("click", deletePhotos); // Delete all photos
+deleteSessionPhotosButton.addEventListener("click", deleteSessionPhotos); // Delete all session photos
