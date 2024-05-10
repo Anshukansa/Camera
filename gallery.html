@@ -9,26 +9,10 @@
 <body>
     <h1>Photo Gallery</h1>
     <a href="index.html">Back to Photo Capture</a> <!-- Link to go back to the main page -->
-    <div id="photo-gallery" class="photo-grid">
-        <!-- Photos will be appended here -->
+    <!-- Photo gallery to display captured photos -->
+    <div id="photo-gallery" class="photo-grid"></div>
+
     </div>
-
-    <script>
-        // Example script to add captured photos to the gallery
-        const photoGallery = document.getElementById("photo-gallery");
-
-        // Retrieve photos from session storage (or another source)
-        const storedPhotos = JSON.parse(localStorage.getItem("capturedPhotos")) || [];
-
-        // Display photos in the gallery
-        storedPhotos.forEach((photo) => {
-            const imgElement = document.createElement("img");
-            imgElement.src = photo;
-            imgElement.className = "photo-thumbnail";
-            photoGallery.appendChild(imgElement);
-        });
-    </script>
-
     <script src="app.js"></script> <!-- Ensure this line is correct -->
 
     
