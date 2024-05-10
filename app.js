@@ -2,10 +2,7 @@
 let sessionActive = false;
 let cameraStream = null;
 
-// IndexedDB setup
-const DB_NAME = "PhotoCaptureApp";
-const STORE_NAME = "photos";
-const DB_VERSION = 1;
+
 
 // Get references to UI elements
 const startSessionButton = document.getElementById("startSession");
@@ -209,6 +206,11 @@ async function capturePhoto() {
 
         const photoBlob = await new Promise((resolve) => canvasElement.toBlob(resolve, "image/png"));
 
+        await savePhoto(SESSION_STORE_NAME, photoBlob, {
+          timestamp: new Date().toLocaleString(),
+           location: { latitude, longitude },
+           address,
+         });
         // Save the photo in IndexedDB with metadata
         await savePhoto(photoBlob, { timestamp: currentDateTime, location: { latitude, longitude }, address });
 
@@ -225,15 +227,35 @@ async function capturePhoto() {
     }
 }
 
-// Function to end the session
-function endSession() {
+// Function to end the session and move session photos to allPhotos
+async function endSession() {
     if (cameraStream) {
         cameraStream.getTracks().forEach((track) => track.stop());
     }
 
-    sessionActive = false; // Set session inactive
+    const db = await openDB();
+
+    const sessionPhotos = await getAllPhotos(SESSION_STORE_NAME);
+
+    if (sessionPhotos.length > 0) {
+        const transaction = db.transaction(ALL_STORE_NAME, "readwrite");
+        const allPhotosStore = transaction.objectStore(ALL_STORE_NAME);
+
+        // Move session photos to allPhotos
+        const savePromises = sessionPhotos.map((photo) => savePhoto(ALL_STORE_NAME, photo.blob, photo.metadata));
+        await Promise.all(savePromises);
+
+        // Clear the sessionPhotos store after moving photos
+        const clearTransaction = db.transaction(SESSION_STORE_NAME, "readwrite");
+        const sessionPhotosStore = clearTransaction.objectStore(SESSION_STORE_NAME);
+        sessionPhotosStore.clear();
+    }
+
+    sessionActive = false;
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
+
+    // Additional cleanup logic...
 }
 
 // Function to share all photos
