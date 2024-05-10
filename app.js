@@ -104,6 +104,27 @@ function openDB() {
     });
 }
 
+// Function to get address from GPS coordinates
+async function getAddressFromCoordinates(lat, lon) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data && data.display_name) {
+            return data.display_name; // Return the display name if found
+        } else {
+            return "Address not found"; // If no address is found
+        }
+    } catch (error) {
+        console.error("Error getting address:", error);
+        return "Error retrieving address"; // If there's an error with the API request
+    }
+}
+
+
+
 // Function to start a session
 async function startSession() {
     clearError();
