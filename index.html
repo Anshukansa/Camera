@@ -2,30 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Photo Capture App</title>
-    <link rel="stylesheet" href="style.css"> <!-- Optional for styling -->
+    <title>Photo Capture with Location Overlay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For icons -->
+    <link rel="stylesheet" href="style.css"> <!-- Updated CSS styling -->
 </head>
 <body>
-    <!-- Buttons for session control -->
-    <button id="startSession">Start Session</button>
-    <button id="capturePhoto" disabled>Capture Photo</button>
-    <button id="endSession" disabled>End Session</button>
-    <button id="sharePhotos" disabled>Share Photos</button>
-    <button id="deletePhotos" disabled>Delete Photos</button>
+    <h1>Photo Capture with Location Overlay</h1>
 
-    <!-- Video feed and canvas for capturing photos -->
-    <div>
-        <video id="video" autoplay></video> <!-- Video stream from the camera -->
-        <canvas id="canvas" style="display:none;"></canvas> <!-- Off-screen canvas -->
+    <!-- Buttons for session management and photo capturing -->
+    <div id="controls">
+        <div class="button-group">
+            <button id="startSession" title="Start the photo session">
+                <i class="fas fa-play"></i> Start Session
+            </button>
+            <button id="endSession" title="End the photo session" disabled>
+                <i class="fas fa-stop"></i> End Session
+            </button>
+        </div>
+        <div class="button-group">
+            <button id="capturePhoto" title="Capture a photo" disabled>
+                <i class="fas fa-camera"></i> Capture Photo
+            </button>
+            <button id="sharePhotos" title="Share captured photos" disabled>
+                <i class="fas fa-share"></i> Share Photos
+            </button>
+            <button id="deletePhotos" title="Delete all captured photos" disabled>
+                <i class="fas fa-trash"></i> Delete All Photos
+            </button>
+        </div>
     </div>
 
-    <!-- Photo gallery for displaying captured photos -->
-    <div id="photo-gallery"></div> <!-- Photo thumbnails appear here -->
+    <!-- Video and Canvas for photo capture -->
+    <div class="camera-container">
+        <video id="video" autoplay class="camera-video"></video> <!-- Camera stream -->
+        <canvas id="canvas" class="camera-canvas" style="display: none;"></canvas> <!-- For drawing photos -->
+    </div>
 
-    <!-- Error message display -->
-    <div id="error-message" style="color:red;"></div> <!-- Error messages display here -->
+    <!-- Photo gallery to display captured photos -->
+    <div id="photo-gallery" class="photo-grid"></div>
 
-    <!-- JavaScript file -->
-    <script src="app.js"></script> <!-- Link to your JavaScript code -->
+    <!-- Error message display area -->
+    <div id="error-message"></div>
+
+    <!-- Link to the updated JavaScript file -->
+    <script src="app.js"></script>
 </body>
 </html>
