@@ -12,21 +12,21 @@
     <!-- Buttons for session management and photo capturing -->
     <div id="controls">
         <div class="button-group">
-            <button id="startSession" title="Start the photo session">
+            <button id="startSessionButton" title="Start the photo session">
                 <i class="fas fa-play"></i> Start Session
             </button>
-            <button id="endSession" title="End the photo session" disabled>
+            <button id="endSessionButton" title="End the photo session" disabled>
                 <i class="fas fa-stop"></i> End Session
             </button>
         </div>
         <div class="button-group">
-            <button id="capturePhoto" title="Capture a photo" disabled>
+            <button id="capturePhotoButton" title="Capture a photo" disabled>
                 <i class="fas fa-camera"></i> Capture Photo
             </button>
-            <button id="sharePhotos" title="Share captured photos" disabled>
+            <button id="sharePhotosButton" title="Share captured photos" disabled>
                 <i class="fas fa-share"></i> Share Photos
             </button>
-            <button id="deletePhotos" title="Delete all captured photos" disabled>
+            <button id="deletePhotosButton" title="Delete all captured photos" disabled>
                 <i class="fas fa-trash"></i> Delete All Photos
             </button>
         </div>
@@ -34,12 +34,12 @@
 
     <!-- Video and Canvas for photo capture -->
     <div class="camera-container">
-        <video id="video" autoplay class="camera-video"></video> <!-- Camera stream -->
-        <canvas id="canvas" class="camera-canvas" style="display: none;"></canvas> <!-- For drawing photos -->
+        <video id="videoElement" autoplay class="camera-video"></video> <!-- Camera stream -->
+        <canvas id="canvasElement" class="camera-canvas" style="display: none;"></canvas> <!-- For drawing photos -->
     </div>
 
     <!-- Last Captured Photo -->
-    <div id="last-captured-photo" class="last-photo-container"></div>
+    <div id="lastCapturedPhoto" class="last-photo-container"></div>
 
     <!-- Button to toggle the gallery -->
     <button id="toggleGalleryButton" title="Show/Hide Photo Gallery">
@@ -49,11 +49,11 @@
     <!-- Photo gallery section, initially hidden -->
     <div id="photoGallerySection" style="display: none;">
         <h2>Photo Gallery</h2>
-        <div id="photo-gallery" class="photo-grid"></div>
+        <div id="photoGallery" class="photo-grid"></div>
     </div>
 
     <!-- Error message display area -->
-    <div id="error-message"></div>
+    <div id="errorMessage"></div>
 
     <!-- Link to JavaScript -->
     <script src="app.js"></script>
