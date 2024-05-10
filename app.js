@@ -4,19 +4,16 @@ let cameraStream = null;
 let photos = []; // Store captured photos
 
 // Get references to UI elements
-const startSessionButton = document.getElementById("startSessionButton");
-const capturePhotoButton = document.getElementById("capturePhotoButton");
-const endSessionButton = document.getElementById("endSessionButton");
-const sharePhotosButton = document.getElementById("sharePhotosButton");
-const deletePhotosButton = document.getElementById("deletePhotosButton");
-const toggleGalleryButton = document.getElementById("toggleGalleryButton");
-const videoElement = document.getElementById("videoElement");
-const canvasElement = document.getElementById("canvasElement");
+const startSessionButton = document.getElementById("startSession");
+const capturePhotoButton = document.getElementById("capturePhoto");
+const endSessionButton = document.getElementById("endSession");
+const sharePhotosButton = document.getElementById("sharePhotos");
+const deletePhotosButton = document.getElementById("deletePhotos");
+const videoElement = document.getElementById("video");
+const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
-const lastCapturedPhoto = document.getElementById("lastCapturedPhoto");
-const errorMessage = document.getElementById("errorMessage");
-const photoGallerySection = document.getElementById("photoGallerySection");
-const photoGallery = document.getElementById("photoGallery");
+const photoGallery = document.getElementById("photo-gallery");
+const errorMessage = document.getElementById("error-message");
 
 // Function to clear error messages
 function clearError() {
@@ -78,7 +75,7 @@ async function getAddressFromCoordinates(lat, lon) {
 
     try {
         const response = await fetch(url);
-        const data = data.json();
+        const data = await response.json();
 
         if (data.display_name) {
             return data.display_name;
@@ -96,20 +93,19 @@ async function startSession() {
 
     const hasCameraPermission = await requestCameraPermission();
     if (!hasCameraPermission) {
-        showError("Error starting session: Camera permission denied.");
         return;
     }
 
     try {
-        await requestLocationPermission(); // Ensure this does not throw errors
+        await requestLocationPermission();
 
         sessionActive = true;
         capturePhotoButton.disabled = false;
         endSessionButton.disabled = false;
-        sharePhotosButton.disabled = true; // No photos initially
-        deletePhotosButton.disabled = true; // No photos initially
-        photos = []; // Reset photos array
-        lastCapturedPhoto.innerHTML = ""; // Clear last photo container
+        sharePhotosButton.disabled = true;
+        deletePhotosButton.disabled = true;
+        photos = [];
+        photoGallery.innerHTML = "";
 
     } catch (error) {
         showError("Error starting session: " + error.message);
@@ -133,7 +129,7 @@ async function capturePhoto() {
 
         const currentDateTime = new Date().toLocaleString();
 
-        const position = await requestLocationPermission(); // Ensure location permission is handled
+        const position = await requestLocationPermission();
         const { latitude, longitude } = position.coords;
 
         const address = await getAddressFromCoordinates(latitude, longitude);
@@ -148,25 +144,12 @@ async function capturePhoto() {
 
         photos.push(file);
 
-        // Show only the last captured photo on the main page
-        lastCapturedPhoto.innerHTML = ""; // Clear previous content
-        const lastPhotoImg = document.createElement("img");
-        lastPhotoImg.src = URL.createObjectURL(photoBlob);
-        lastPhotoImg.className = "photo-thumbnail"; // Styled last photo
-        lastCapturedPhoto.appendChild(lastPhotoImg);
+        const imgElement = document.createElement("img");
+        imgElement.src = URL.createObjectURL(photoBlob);
+        imgElement.className = "photo-thumbnail"; // Styled thumbnail
+        photoGallery.appendChild(imgElement);
 
-        photoGallery.innerHTML = ""; // Clear existing content in full gallery
-
-        // Add all photos to the gallery (stored in `photos` array)
-        photos.forEach((photo) => {
-            const img = document.createElement("img");
-            img.src = URL.createObjectURL(photo);
-            img.className = "photo-thumbnail"; // Styled photo
-            photoGallery.appendChild(img);
-        });
-
-        sharePhotosButton.disabled = false; // Enable share button when there is at least one photo
-        deletePhotosButton.disabled = false; // Enable delete button when there is at least one photo
+        sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
@@ -181,9 +164,9 @@ function endSession() {
 
     sessionActive = false;
     capturePhotoButton.disabled = true;
-    endSessionButton.disabled = true;
-    sharePhotosButton.disabled = photos.length === 0;
+    endSessionButton.disabled;
     deletePhotosButton.disabled = photos.length === 0;
+    sharePhotosButton.disabled = photos.length === 0;
 }
 
 // Function to share all photos
@@ -196,7 +179,7 @@ async function sharePhotos() {
     }
 
     if (navigator.canShare && navigator.canShare({ files: photos })) {
-        try:
+        try {
             await navigator.share({
                 files: photos,
                 title: "Captured Photos",
@@ -215,22 +198,11 @@ function deletePhotos() {
     if (confirm("Are you sure you want to delete all photos?")) {
         photos = [];
         photoGallery.innerHTML = "";
-        lastCapturedPhoto.innerHTML = ""; // Clear last photo display
         sharePhotosButton.disabled = true; // Disable share button after deleting
-        deletePhotosButton.disabled = true;
     }
 }
 
-// Toggle function for showing/hiding the photo gallery
-toggleGalleryButton.addEventListener("click", () => {
-    const isHidden = photoGallerySection.style.display === "none";
-    photoGallerySection.style.display = isHidden ? "block" : "none";
-    toggleGalleryButton.innerHTML = isHidden
-        ? '<i class="fas fa-images"></i> Hide Gallery'
-        : '<i class="fas fa-images"></i> Show Gallery';
-});
-
-// Event listeners for other buttons
+// Event listeners for the buttons
 startSessionButton.addEventListener("click", startSession);
 capturePhotoButton.addEventListener("click", capturePhoto);
 endSessionButton.addEventListener("click", endSession);
