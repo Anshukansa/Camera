@@ -202,6 +202,12 @@ function deletePhotos() {
     }
 }
 
+// Navigation to the gallery page
+const viewGalleryButton = document.getElementById("viewGallery");
+viewGalleryButton.addEventListener("click", () => {
+    window.location.href = "gallery.html"; // Redirect to the gallery page
+});
+
 // After capturing a photo
 const photoDataURL = canvasElement.toDataURL("image/png");
 photos.push(photoDataURL);
