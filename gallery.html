@@ -1,20 +1,40 @@
-<!-- gallery.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Photo Gallery</title>
-    <link rel="stylesheet" href="style.css"> <!-- Use the same stylesheet -->
+    <link rel="stylesheet" href="style.css"> <!-- Link to your stylesheet -->
 </head>
 <body>
     <h1>Photo Gallery</h1>
-    <a href="index.html">Back to Photo Capture</a> <!-- Link to go back to the main page -->
-    <!-- Photo gallery to display captured photos -->
-    <div id="photo-gallery" class="photo-grid"></div>
-
-    </div>
-    <script src="app.js"></script> <!-- Ensure this line is correct -->
-
+    <div id="photo-gallery" class="photo-grid"></div> <!-- Placeholder for photos -->
+    <div id="error-message"></div> <!-- Display error messages -->
     
+    <script src="app.js"></script> <!-- Link to your JavaScript code -->
+    <script>
+        // Load stored photos from IndexedDB and display them
+        async function loadPhotos() {
+            try {
+                const storedPhotos = await getAllPhotos(); // Retrieve all stored photos
+
+                const photoGallery = document.getElementById("photo-gallery");
+                photoGallery.innerHTML = ""; // Clear any existing content
+
+                storedPhotos.forEach((photo) => {
+                    const imgElement = document.createElement("img");
+                    imgElement.src = URL.createObjectURL(photo.blob);
+                    imgElement.className = "photo-thumbnail"; // Add photo to the gallery
+                    photoGallery.appendChild(imgElement);
+                });
+            } catch (error) {
+                console.error("Error loading photos:", error);
+                const errorMessage = document.getElementById("error-message");
+                errorMessage.textContent = "Error loading photos.";
+            }
+        }
+
+        // Call the function to load photos when the page loads
+        loadPhotos();
+    </script>
 </body>
 </html>
