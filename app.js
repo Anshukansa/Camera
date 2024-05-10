@@ -9,12 +9,14 @@ const capturePhotoButton = document.getElementById("capturePhoto");
 const endSessionButton = document.getElementById("endSession");
 const sharePhotosButton = document.getElementById("sharePhotos");
 const deletePhotosButton = document.getElementById("deletePhotos");
+const toggleGalleryButton = document.getElementById("toggleGalleryButton");
 const videoElement = document.getElementById("video");
 const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
-const photoGallery = document.getElementById("photo-gallery");
 const lastCapturedPhoto = document.getElementById("last-captured-photo");
 const errorMessage = document.getElementById("error-message");
+const photoGallerySection = document.getElementById("photo-gallery-section");
+const photoGallery = document.getElementById("photo-gallery");
 
 // Function to clear error messages
 function clearError() {
@@ -103,11 +105,10 @@ async function startSession() {
 
         sessionActive = true;
         capturePhotoButton.disabled = false;
-        endSessionButton.disabled = false;
+        endSessionButton disabled = false;
         sharePhotosButton.disabled = true; // No photos initially
         deletePhotosButton.disabled = true; // No photos initially
         photos = []; // Reset photos array
-        photoGallery.innerHTML = ""; // Clear the full gallery
         lastCapturedPhoto.innerHTML = ""; // Clear last photo container
 
     } catch (error) {
@@ -147,7 +148,7 @@ async function capturePhoto() {
 
         photos.push(file);
 
-        // Show the last captured photo on the main page
+        // Show only the last captured photo on the main page
         lastCapturedPhoto.innerHTML = ""; // Clear previous content
         const lastPhotoImg = document.createElement("img");
         lastPhotoImg.src = URL.createObjectURL(photoBlob);
@@ -195,7 +196,7 @@ async function sharePhotos() {
     }
 
     if (navigator.canShare && navigator.canShare({ files: photos })) {
-        try {
+        try:
             await navigator.share({
                 files: photos,
                 title: "Captured Photos",
@@ -215,12 +216,21 @@ function deletePhotos() {
         photos = [];
         photoGallery.innerHTML = "";
         lastCapturedPhoto.innerHTML = ""; // Clear last photo display
-        sharePhotosButton.disabled = true; // Disable share button after deleting
-        deletePhotosButton.disabled = true; // Disable delete button
+        sharePhotosButton disabled = true; // Disable share button after deleting
+        deletePhotosButton disabled = true;
     }
 }
 
-// Event listeners for the buttons
+// Toggle function for showing/hiding the photo gallery
+toggleGalleryButton.addEventListener("click", () => {
+    const isHidden = photoGallerySection.style.display === "none";
+    photoGallerySection.style.display = isHidden ? "block" : "none";
+    toggleGalleryButton.innerHTML = isHidden
+        ? '<i class="fas fa-images"></i> Hide Gallery'
+        : '<i class="fas fa-images"></i> Show Gallery';
+});
+
+// Event listeners for other buttons
 startSessionButton.addEventListener("click", startSession);
 capturePhotoButton.addEventListener("click", capturePhoto);
 endSessionButton.addEventListener("click", endSession);
