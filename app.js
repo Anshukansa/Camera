@@ -1,9 +1,6 @@
-// Variables to manage the session and camera stream
+// Variables for session management and camera stream
 let sessionActive = false;
 let cameraStream = null;
-
-// Current session photos stored in memory
-let sessionPhotos = [];
 
 // IndexedDB setup
 const DB_NAME = "PhotoCaptureApp";
@@ -74,6 +71,24 @@ function requestLocationPermission() {
             reject(new Error("Geolocation not supported."));
         }
     });
+}
+
+// Function to get address from coordinates
+async function getAddressFromCoordinates(lat, lon) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.display_name) {
+            return data.display_name;
+        } else {
+            return "No address found.";
+        }
+    } catch (error) {
+        return "Error getting address.";
+    }
 }
 
 // IndexedDB functions
@@ -157,10 +172,10 @@ async function startSession() {
         capturePhotoButton.disabled = false; // Enable capture button
         endSessionButton.disabled = false; // Enable end session button
         sharePhotosButton.disabled = true; // Disable sharing initially
-        deletePhotosButton disabled = true; // Disable delete button initially
+        deletePhotosButton.disabled = true; // Disable delete button
 
-        sessionPhotos = []; // Clear the current session photos
-        photoGallery.innerHTML = ""; // Reset the photo gallery
+        // Reset the photo gallery
+        photoGallery.innerHTML = ""; 
 
     } catch (error) {
         showError("Error starting session: " + error.message);
@@ -169,8 +184,6 @@ async function startSession() {
 
 // Function to capture a photo
 async function capturePhoto() {
-    clearError();
-
     if (!sessionActive) {
         showError("Session not active. Start the session first.");
         return;
@@ -196,35 +209,24 @@ async function capturePhoto() {
 
         const photoBlob = await new Promise((resolve) => canvasElement.toBlob(resolve, "image/png"));
 
-        // Add to session photos
-        sessionPhotos.push({ blob: photoBlob, timestamp: currentDateTime, location: { latitude, longitude }, address });
+        // Save the photo in IndexedDB with metadata
+        await savePhoto(photoBlob, { timestamp: currentDateTime, location: { latitude, longitude }, address });
 
         // Display the captured photo in the gallery
         const imgElement = document.createElement("img");
-        imgElement.src = URL.createObjectURL(photoBlob);
+        imgElement.src = URL.createObjectURL(photoBlob); // Thumbnail image
         imgElement.className = "photo-thumbnail"; // Styled thumbnail
         photoGallery.appendChild(imgElement);
 
-        sharePhotosButton.disabled = false; // Enable sharing
-        deletePhotosButton.disabled = false; // Enable delete button
-
+        sharePhotosButton.disabled = false; // Enable share button when there's at least one photo
+        deletePhotosButton.disabled = false;
     } catch (error) {
         showError("Error capturing photo: " + error.message);
     }
 }
 
-// Function to delete session photos
-function deleteSessionPhotos() {
-    if (confirm("Are you sure you want to delete session photos?")) {
-        sessionPhotos = []; // Clear session photos
-        photoGallery.innerHTML = ""; // Clear the gallery
-        deletePhotosButton.disabled = true; // Disable delete button after clearing
-        sharePhotosButton.disabled = true; // Disable share button if no photos left
-    }
-}
-
 // Function to end the session
-async function endSession() {
+function endSession() {
     if (cameraStream) {
         cameraStream.getTracks().forEach((track) => track.stop());
     }
@@ -232,45 +234,87 @@ async function endSession() {
     sessionActive = false; // Set session inactive
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
-    
-    if (sessionPhotos.length > 0) {
-        // If there are session photos, save them to IndexedDB
-        const savePromises = sessionPhotos.map((photo) => savePhoto(photo.blob, photo));
-        await Promise.all(savePromises);
-    }
-
-    sessionPhotos = []; // Reset session photos
 }
 
-// Function to share session photos
-async function shareSessionPhotos() {
-    if (sessionPhotos.length === 0) {
+// Function to share all photos
+async function sharePhotos() {
+    clearError();
+
+    const storedPhotos = await getAllPhotos();
+
+    if (storedPhotos.length === 0) {
         showError("No photos to share.");
         return;
     }
 
-    const photoFiles = sessionPhotos.map(
-        (photo) => new File([photo.blob], `session_photo_${photo.timestamp}.png`, { type: "image/png" })
-    );
+    const photoFiles = storedPhotos.map((photo) => new File([photo.blob], "snapshot.png", { type: "image/png" }));
 
     if (navigator.canShare && navigator.canShare({ files: photoFiles })) {
         try {
             await navigator.share({
                 files: photoFiles,
-                title: "Session Photos",
-                text: "Here are the photos from this session.",
+                title: "Captured Photos",
+                text: "Here are the photos I took!",
             });
         } catch (error) {
-            showError("Error sharing session photos: " + error.message);
+            showError("Error sharing photos: " + error.message);
         }
     } else {
         showError("Web Share API does not support sharing files in this browser.");
     }
 }
 
+// Function to delete all photos
+async function deletePhotos() {
+    if (confirm("Are you sure you want to delete all photos?")) {
+        const db = await openDB();
+        const transaction = db.transaction(STORE_NAME, "readwrite");
+        const objectStore = transaction.objectStore(STORE_NAME);
+
+        const request = objectStore.clear();
+
+        request.onsuccess = () => {
+            photoGallery.innerHTML = ""; // Clear the gallery
+            sharePhotosButton.disabled = true; // Disable share button after deleting
+        };
+
+        request.onerror = (event) => {
+            showError("Error deleting photos: " + event.target.error.message);
+        };
+    }
+}
+
+// Function to load all photos from IndexedDB
+async function loadPhotos() {
+    try {
+        const storedPhotos = await getAllPhotos(); // Get all stored photos
+
+        photoGallery.innerHTML = ""; // Clear existing photos in the gallery
+
+        storedPhotos.forEach((photo) => {
+            const imgElement = document.createElement("img");
+            imgElement.src = URL.createObjectURL(photo.blob); // Display the photo
+            imgElement.className = "photo-thumbnail"; // Styled thumbnail
+            photoGallery.appendChild(imgElement);
+
+            // Create a download link for each photo
+            const downloadLink = document.createElement("a");
+            downloadLink.href = URL.createObjectURL(photo.blob);
+            downloadLink.download = `photo_${photo.id}.png`;
+            downloadLink.textContent = "Download Photo"; // Text for download link
+            photoGallery.appendChild(downloadLink); // Add download link to the gallery
+        });
+    } catch (error) {
+        showError("Error loading photos: " + error.message);
+    }
+}
+
+// Load all stored photos when initializing the app
+loadPhotos();
+
 // Event listeners for the buttons
-startSessionButton.addEventListener("click", startSession);
-capturePhotoButton.addEventListener("click", capturePhoto);
-endSessionButton.addEventListener("click", endSession);
-sharePhotosButton.addEventListener("click", shareSessionPhotos); // Share session photos
-deletePhotosButton.addEventListener("click", deleteSessionPhotos); // Delete session photos
+startSessionButton.addEventListener("click", startSession); // Start the session
+capturePhotoButton.addEventListener("click", capturePhoto); // Capture a photo
+endSessionButton.addEventListener("click", endSession); // End the session
+sharePhotosButton.addEventListener("click", sharePhotos); // Share all photos
+deletePhotosButton.addEventListener("click", deletePhotos); // Delete all photos
