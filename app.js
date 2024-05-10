@@ -234,7 +234,6 @@ function endSession() {
     sessionActive = false; // Set session inactive
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
-    deletePhotosButton.disabled = false;
 }
 
 // Function to share all photos
