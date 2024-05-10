@@ -4,19 +4,19 @@ let cameraStream = null;
 let photos = []; // Store captured photos
 
 // Get references to UI elements
-const startSessionButton = document.getElementById("startSession");
-const capturePhotoButton = document.getElementById("capturePhoto");
-const endSessionButton = document.getElementById("endSession");
-const sharePhotosButton = document.getElementById("sharePhotos");
-const deletePhotosButton = document.getElementById("deletePhotos");
+const startSessionButton = document.getElementById("startSessionButton");
+const capturePhotoButton = document.getElementById("capturePhotoButton");
+const endSessionButton = document.getElementById("endSessionButton");
+const sharePhotosButton = document.getElementById("sharePhotosButton");
+const deletePhotosButton = document.getElementById("deletePhotosButton");
 const toggleGalleryButton = document.getElementById("toggleGalleryButton");
-const videoElement = document.getElementById("video");
-const canvasElement = document.getElementById("canvas");
+const videoElement = document.getElementById("videoElement");
+const canvasElement = document.getElementById("canvasElement");
 const context = canvasElement.getContext("2d");
-const lastCapturedPhoto = document.getElementById("last-captured-photo");
-const errorMessage = document.getElementById("error-message");
-const photoGallerySection = document.getElementById("photo-gallery-section");
-const photoGallery = document.getElementById("photo-gallery");
+const lastCapturedPhoto = document.getElementById("lastCapturedPhoto");
+const errorMessage = document.getElementById("errorMessage");
+const photoGallerySection = document.getElementById("photoGallerySection");
+const photoGallery = document.getElementById("photoGallery");
 
 // Function to clear error messages
 function clearError() {
@@ -78,7 +78,7 @@ async function getAddressFromCoordinates(lat, lon) {
 
     try {
         const response = await fetch(url);
-        const data = await response.json();
+        const data = data.json();
 
         if (data.display_name) {
             return data.display_name;
@@ -105,7 +105,7 @@ async function startSession() {
 
         sessionActive = true;
         capturePhotoButton.disabled = false;
-        endSessionButton disabled = false;
+        endSessionButton.disabled = false;
         sharePhotosButton.disabled = true; // No photos initially
         deletePhotosButton.disabled = true; // No photos initially
         photos = []; // Reset photos array
@@ -136,7 +136,7 @@ async function capturePhoto() {
         const position = await requestLocationPermission(); // Ensure location permission is handled
         const { latitude, longitude } = position.coords;
 
-        const address = await getAddressFromCoordinates(latitude, longitude); // Ensure this function is defined
+        const address = await getAddressFromCoordinates(latitude, longitude);
 
         context.fillStyle = "white";
         context.font = "15px Arial";
@@ -166,7 +166,7 @@ async function capturePhoto() {
         });
 
         sharePhotosButton.disabled = false; // Enable share button when there is at least one photo
-        deletePhotosButton.disabled = false; // Enable delete button
+        deletePhotosButton.disabled = false; // Enable delete button when there is at least one photo
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
@@ -216,8 +216,8 @@ function deletePhotos() {
         photos = [];
         photoGallery.innerHTML = "";
         lastCapturedPhoto.innerHTML = ""; // Clear last photo display
-        sharePhotosButton disabled = true; // Disable share button after deleting
-        deletePhotosButton disabled = true;
+        sharePhotosButton.disabled = true; // Disable share button after deleting
+        deletePhotosButton.disabled = true;
     }
 }
 
