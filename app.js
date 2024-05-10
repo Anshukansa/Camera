@@ -230,3 +230,4 @@ capturePhotoButton.addEventListener("click", capturePhoto);
 endSessionButton.addEventListener("click", endSession);
 sharePhotosButton.addEventListener("click", sharePhotos);
 deletePhotosButton.addEventListener("click", deletePhotos);
+const viewGalleryButton = document.getElementById("viewGallery");
