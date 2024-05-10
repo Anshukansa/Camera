@@ -202,6 +202,22 @@ function deletePhotos() {
     }
 }
 
+// After capturing a photo
+const photoDataURL = canvasElement.toDataURL("image/png");
+photos.push(photoDataURL);
+
+// Save the updated photos array to localStorage
+localStorage.setItem("capturedPhotos", JSON.stringify(photos));
+
+// Update the latest photo on the main page
+const latestPhotoSection = document.getElementById("latest-photo");
+latestPhotoSection.innerHTML = ""; // Clear previous content
+const latestPhoto = document.createElement("img");
+latestPhoto.src = photoDataURL;
+latestPhoto.className = "photo-thumbnail";
+latestPhotoSection.appendChild(latestPhoto);
+
+
 // Event listeners for the buttons
 startSessionButton.addEventListener("click", startSession);
 capturePhotoButton.addEventListener("click", capturePhoto);
