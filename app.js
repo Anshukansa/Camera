@@ -93,15 +93,21 @@ async function getAddressFromCoordinates(lat, lon) {
 }
 
 // IndexedDB functions
+
+
 function openDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
+
+            // Ensure session_photos object store exists
             if (!db.objectStoreNames.contains(SESSION_STORE)) {
                 db.createObjectStore(SESSION_STORE, { keyPath: "id", autoIncrement: true });
             }
+
+            // Ensure all_photos object store exists
             if (!db.objectStoreNames.contains(ALL_PHOTOS_STORE)) {
                 db.createObjectStore(ALL_PHOTOS_STORE, { keyPath: "id", autoIncrement: true });
             }
@@ -116,6 +122,7 @@ function openDB() {
         };
     });
 }
+
 
 // Function to save a photo in the specified object store
 async function savePhoto(storeName, photoBlob, metadata) {
