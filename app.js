@@ -253,9 +253,7 @@ async function endSession() {
 
     sessionActive = false;
     capturePhotoButton.disabled = true;
-    endSessionButton.disabled = true;
-
-    // Additional cleanup logic...
+    endSessionButton.disabled = true; 
 }
 
 // Function to share all photos
