@@ -222,6 +222,9 @@ async function capturePhoto() {
 
         const photoBlob = await new Promise((resolve) => canvasElement.toBlob(resolve, "image/png"));
 
+        // Open the IndexedDB before saving the photo
+        const db = await openDB();
+
         // Save the photo in the session store
         await savePhoto(SESSION_STORE_NAME, photoBlob, { timestamp: currentDateTime, location: { latitude, longitude }, address });
 
@@ -231,14 +234,12 @@ async function capturePhoto() {
         imgElement.className = "photo-thumbnail"; // Styled thumbnail
         sessionPhotoGallery.appendChild(imgElement);
        
-
         shareSessionPhotosButton.style.display = "block";
         shareSessionPhotosButton.disabled = false;
 
         // Enable delete buttons after capturing a photo
         deleteSessionPhotosButton.style.display = "block";
         deleteSessionPhotosButton.disabled = false;
-        
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
