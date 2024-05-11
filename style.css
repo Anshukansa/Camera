@@ -36,7 +36,7 @@ button:disabled {
 
 /* Styling for the camera container */
 .camera-container {
-    display: inline-block;
+    display: none;
     border: 2px solid #ccc;
     padding: 10px;
     margin: 20px;
