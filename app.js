@@ -18,7 +18,8 @@ const deleteAllPhotosButton = document.getElementById("deleteAllPhotos");
 const videoElement = document.getElementById("video");
 const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
-const photoGallery = document.getElementById("photo-gallery");
+const photoGallery = document.getElementById("session-photo-gallery");
+const photoGallery = document.getElementById("all-photo-gallery");
 const errorMessage = document.getElementById("error-message");
 
 // Function to clear error messages
