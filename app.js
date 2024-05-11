@@ -252,6 +252,7 @@ async function endSession() {
         endSessionButton.style.display = "none";
         capturePhotoButton.style.display = "none"; 
         sharePhotosButton.style.display =  "block"; 
+        sharePhotosButton.disabled = false; // Enable share button if there are photos to share
         deleteSessionPhotosButton.style.display =  "block"; 
         deleteAllPhotosButton.style.display =  "block";
 
