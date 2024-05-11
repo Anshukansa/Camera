@@ -321,34 +321,6 @@ async function deleteAllPhotos() {
     }
 }
 
-// Function to load all photos from the all_photos store
-async function loadAllPhotos() {
-    try {
-        const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
-
-        photoGallery.innerHTML = ""; // Clear existing photos in the gallery
-
-        allPhotos.forEach((photo) => {
-            const imgElement = document.createElement("img");
-            imgElement.src = URL.createObjectURL(photo.blob); // Display the photo
-            imgElement.className = "photo-thumbnail"; // Styled thumbnail
-            photoGallery.appendChild(imgElement);
-        });
-
-        if (allPhotos.length > 0) {
-            sharePhotosButton.style.display =  "block"; 
-            sharePhotosButton.disabled = false; // Enable share button if there are photos to share
-            deleteSessionPhotosButton.style.display =  "block"; 
-            deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
-            deleteAllPhotosButton.style.display =  "block"; 
-            deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
-            
-        }
-
-    } catch (error) {
-        showError("Error loading all photos: " + error.message);
-    }
-}
 
 // Event listeners for the buttons
 startSessionButton.addEventListener("click", startSession); // Start the session
