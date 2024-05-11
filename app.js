@@ -240,7 +240,7 @@ async function endSession() {
     }
 
     sessionActive = false; // Set session inactive
-    startSessionButtonn.style.display = "inline-blick"; // show the "Start Session" button
+    startSessionButtonn.style.display = "inline-block"; // show the "Start Session" button
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
 
