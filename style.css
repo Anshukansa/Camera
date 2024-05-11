@@ -27,7 +27,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-#controls .button-group button:not(#startSession) {
+#controls .button-group button#startSession {
     display: block;
 }
 
