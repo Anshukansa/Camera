@@ -15,33 +15,6 @@
 </div>
     <div id="photo-gallery" class="photo-grid"></div>
     <div id="error-message"></div> <!-- Display error messages -->
-    
-    <script src="app.js"></script> <!-- Link to your JavaScript code -->
-    <script>
-        // Load stored photos from IndexedDB and display them
-        async function loadAllPhotos() {
-            try {
-                const storedPhotos = await getAllPhotos(); // Retrieve all stored photos
-
-                const photoGallery = document.getElementById("photo-gallery");
-                photoGallery.innerHTML = ""; // Clear any existing content
-
-                storedPhotos.forEach((photo) => {
-                    const imgElement = document.createElement("img");
-                    imgElement.src = URL.createObjectURL(photo.blob);
-                    imgElement.className = "photo-thumbnail"; // Add photo to the gallery
-                    photoGallery.appendChild(imgElement);
-                });
-            } catch (error) {
-                console.error("Error loading photos:", error);
-                const errorMessage = document.getElementById("error-message");
-                errorMessage.textContent = "Error loading photos.";
-            }
-        }
-
-        // Call the function to load photos when the page loads
-        loadAllPhotos();
-    </script>
     <script src="app.js"></script>
 </body>
 </html>
