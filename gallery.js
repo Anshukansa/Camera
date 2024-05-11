@@ -4,7 +4,7 @@ const ALL_PHOTOS_STORE_NAME = "all_photos";
 const DB_VERSION = 1;
 
 // Get reference to UI elements
-const photoGallery = document.getElementById("photo-gallery");
+const allphotoGallery = document.getElementById("all-photo-gallery");
 const errorMessage = document.getElementById("error-message");
 
 // Function to retrieve all stored photos from a specific store in IndexedDB
