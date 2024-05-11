@@ -172,12 +172,11 @@ async function startSession() {
     try {
         await requestLocationPermission();
 
-        // Hide the "Start Session" button
-        startSessionBtn.style.display = "none";
-        // Show the "End Session" button
-        endSessionBtn.style.display = "inline-block"; // or "block" depending on your layout
+        
+        
         
         sessionActive = true; // Set session active
+        startSessionButton.style.display = "none"; // Hide the "Start Session" button
         capturePhotoButton.disabled = false; // Enable capture button
         endSessionButton.disabled = false; // Enable end session button
         deleteSessionPhotosButton.disabled = true; // Disable delete button initially
@@ -241,6 +240,7 @@ async function endSession() {
     }
 
     sessionActive = false; // Set session inactive
+    startSessionButtonn.style.display = "inline-blick"; // show the "Start Session" button
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
 
