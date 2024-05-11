@@ -250,15 +250,6 @@ async function endSession() {
     if (cameraStream) {
         cameraStream.getTracks().forEach((track) => track.stop());
     }
-        // Hide the camera container when session starts
-        document.querySelector('.camera-container').style.display = "none";
-        startSessionButton.style.display = "block";
-        endSessionButton.style.display = "none";
-        capturePhotoButton.style.display = "none"; 
-        sharePhotosButton.style.display =  "none"; 
-        sharePhotosButton.disabled = false; // Enable share button if there are photos to share
-        deleteSessionPhotosButton.style.display =  "none"; 
-        deleteAllPhotosButton.style.display =  "none";
 
 
     try {
