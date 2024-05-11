@@ -228,10 +228,15 @@ async function capturePhoto() {
         imgElement.className = "photo-thumbnail"; // Styled thumbnail
         photoGallery.appendChild(imgElement);
 
-        deleteSessionPhotosButton.disabled =  "block"; 
-        deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
-        deleteAllPhotosButton.disabled =  "block"; 
-        deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
+        // Enable share button after capturing a photo
+        sharePhotosButton.style.display = "block";
+        sharePhotosButton.disabled = false;
+
+        // Enable delete buttons after capturing a photo
+        deleteSessionPhotosButton.style.display = "block";
+        deleteSessionPhotosButton.disabled = false;
+        deleteAllPhotosButton.style.display = "block";
+        deleteAllPhotosButton.disabled = false;
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
