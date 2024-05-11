@@ -183,9 +183,6 @@ async function startSession() {
         
         capturePhotoButton.disabled = false; 
         capturePhotoButton.style.display = "block"; 
-
-        sharePhotosButton.disabled = false;
-        sharePhotosButton.disabled =  "block"; 
         
         deleteAllPhotosButton.disabled =  "none"; 
         deleteSessionPhotosButton.disabled =  "none"; 
@@ -254,9 +251,9 @@ async function endSession() {
         startSessionButton.style.display = "block";
         endSessionButton.style.display = "none";
         capturePhotoButton.style.display = "none"; 
-        sharePhotosButton.disabled =  "none"; 
-        deleteAllPhotosButton.disabled =  "none"; 
-        deleteSessionPhotosButton.disabled =  "none"; 
+        sharePhotosButton.style.display =  "block"; 
+        deleteSessionPhotosButton.style.display =  "block"; 
+        deleteAllPhotosButton.style.display =  "block";
 
 
     try {
@@ -336,7 +333,13 @@ async function loadAllPhotos() {
         });
 
         if (allPhotos.length > 0) {
+            sharePhotosButton.style.display =  "block"; 
             sharePhotosButton.disabled = false; // Enable share button if there are photos to share
+            deleteSessionPhotosButton.style.display =  "block"; 
+            deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
+            deleteAllPhotosButton.style.display =  "block"; 
+            deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
+            
         }
 
     } catch (error) {
