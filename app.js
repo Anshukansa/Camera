@@ -174,6 +174,8 @@ async function startSession() {
     try {
         await requestLocationPermission();
 
+        // Clear previous session photos before starting a new session
+        await clearStore(SESSION_STORE_NAME);
         
         // show the camera container when session starts
         document.querySelector('.camera-container').style.display = "block";
@@ -261,9 +263,6 @@ async function endSession() {
         for (const sessionPhoto of sessionPhotos) {
             await savePhoto(ALL_PHOTOS_STORE_NAME, sessionPhoto.blob, sessionPhoto.metadata);
         }
-
-        // Clear session photos from IndexedDB
-        await clearStore(SESSION_STORE_NAME);
 
         // Redirect to another page after completing all operations
         window.location.href = "sessionGallery.html";
