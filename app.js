@@ -326,28 +326,6 @@ async function loadSessionPhotos() {
     }
 }
 
-async function loadAllPhotos() {
-    try {
-        const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
-        const allPhotoGallery = document.getElementById("all-photo-gallery");
-
-        allPhotoGallery.innerHTML = ""; // Clear existing all photos in the gallery
-
-        allPhotos.forEach((photo) => {
-            const imgElement = document.createElement("img");
-            imgElement.src = URL.createObjectURL(photo.blob); // Display the all photo
-            imgElement.className = "photo-thumbnail"; // Styled thumbnail
-            allPhotoGallery.appendChild(imgElement);
-        });
-
-        if (allPhotos.length > 0) {
-            
-        }
-
-    } catch (error) {
-        showError("Error loading all photos: " + error.message);
-    }
-}
 
 // Function to delete session photos
 async function deleteSessionPhotos() {
