@@ -28,10 +28,8 @@ button:disabled {
 }
 
 /* Group buttons with spacing */
-.startSessionButton {
+.button-group > button:not(#startSession) {
     display: block;
-    justify-content: center;
-    gap: 10px; /* Space between buttons */
 }
 
 /* Group buttons with spacing */
