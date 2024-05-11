@@ -2,47 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Photo Capture with Location Overlay</title>
+    <title>Photo Gallery</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For icons -->
     <link rel="stylesheet" href="style.css"> <!-- Updated CSS styling -->
 </head>
 <body>
-    <h1>Photo Capture with Location Overlay</h1>
-
-    <!-- Buttons for session management and photo capturing -->
-    <div id="controls">
-        <div class="button-group">
-
-            <button id="sharePhotos" class="hide" title="Share captured photos" disabled>
-                <i class="fas fa-share"></i> Share Photos
-            </button>
-            <div class="button-group">
-            <button id="deleteAllPhotos" class="hide" title="Delete all stored photos" disabled>
-                <i class="fas fa-trash"></i> Delete All Photos
-            </button>
-            <button id="navigateToOtherPage" title="Navigate to other page">
-            <a href="index.html"> Main Page </a>
-            </button>
-
-    
-</div>
-
-        </div>
-    </div>
-
+    <h1>Photo Gallery</h1>
 
     <!-- Photo gallery to display captured photos -->
     <div id="photo-gallery" class="photo-grid"></div>
+
+    <!-- Link back to the main page -->
+    <a href="index.html">Back to Main Page</a>
 
     <!-- Error message display area -->
     <div id="error-message"></div>
 
     <!-- Link to the updated JavaScript file -->
-    <!-- Script to load all photos when the gallery page is loaded -->
-<script>
-    loadAllPhotos();
-</script>
-
     <script src="app.js"></script>
+    <script>
+        // Load all stored photos when initializing the gallery
+        loadAllPhotos();
+    </script>
 </body>
 </html>
