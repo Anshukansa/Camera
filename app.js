@@ -177,12 +177,19 @@ async function startSession() {
         
         sessionActive = true; // Set session active
         startSessionButton.style.display = "none"; // Hide the "Start Session" button
+        
+        endSessionButton.disabled = false; // Enable end session button
         endSessionButton.style.display = "block";  // Show the "End Session" button
         
-        capturePhotoButton.disabled = false; // Enable end session button
-        capturePhotoButton.style.display = "block"; // Show the "Capture" button  
+        capturePhotoButton.disabled = false; 
+        capturePhotoButton.style.display = "block"; 
+
+        sharePhotosButton.disabled = false;
+        sharePhotosButton.disabled =  "block"; 
         
-        deleteSessionPhotosButton.disabled = true; // Disable delete button initially
+        deleteAllPhotosButton.disabled =  "none"; 
+        deleteSessionPhotosButton.disabled =  "none"; 
+        
 
         // Reset the session photo gallery
         photoGallery.innerHTML = "";
@@ -228,7 +235,9 @@ async function capturePhoto() {
         imgElement.className = "photo-thumbnail"; // Styled thumbnail
         photoGallery.appendChild(imgElement);
 
+        deleteSessionPhotosButton.disabled =  "block"; 
         deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
+        deleteAllPhotosButton.disabled =  "block"; 
         deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
 
     } catch (error) {
@@ -242,11 +251,12 @@ async function endSession() {
         cameraStream.getTracks().forEach((track) => track.stop());
     }
 
-    sessionActive = false; // Set session inactive
-    startSessionButton.style.display = "block"; // show the "Start Session" button
-    endSessionButton.style.display = "none";  // hide the "End Session" button
-    deleteSessionPhotosButton.disabled = false; // To enable the delete button
-    capturePhotoButton.style.display = "none"; // hide the "Capture" button
+        startSessionButton.style.display = "block";
+        endSessionButton.style.display = "none";
+        capturePhotoButton.style.display = "none"; 
+        sharePhotosButton.disabled =  "none"; 
+        deleteAllPhotosButton.disabled =  "none"; 
+        deleteSessionPhotosButton.disabled =  "none"; 
 
 
     try {
