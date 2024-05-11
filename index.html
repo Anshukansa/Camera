@@ -2,46 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photo Capture with Location Overlay</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For icons -->
     <link rel="stylesheet" href="style.css"> <!-- Updated CSS styling -->
 </head>
 <body>
-    <!-- Start Session Modal -->
-    <div id="startSessionModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Start Session</h2>
-            <p>Click below to start capturing photos.</p>
-            <button id="startSessionButton" title="Start the photo session">Start Session</button>
+    <h1>Photo Capture with Location Overlay</h1>
+
+    <!-- Buttons for session management and photo capturing -->
+    <div id="controls">
+        <div class="button-group">
+            <button id="startSession" title="Start the photo session">
+                <i class="fas fa-play"></i> Start Session
+            </button>
+            <button id="endSession" title="End the photo session" disabled>
+                <i class="fas fa-stop"></i> End Session
+            </button>
+        </div>
+        <div class="button-group">
+            <button id="capturePhoto" title="Capture a photo" disabled>
+                <i class="fas fa-camera"></i> Capture Photo
+            </button>
+            <button id="sharePhotos" title="Share captured photos" disabled>
+                <i class="fas fa-share"></i> Share Photos
+            </button>
+            <button id="deleteSessionPhotos" title="Delete session photos" disabled>
+                <i class="fas fa-trash"></i> Delete All Photos
+            </button>
+            <div class="button-group">
+            <button id="deleteAllPhotos" title="Delete all stored photos" disabled>
+                <i class="fas fa-trash"></i> Delete All Photos
+    </button>
+</div>
+
         </div>
     </div>
 
-    <!-- End Session Modal -->
-    <div id="endSessionModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>End Session</h2>
-            <p>Are you sure you want to end the session?</p>
-            <button id="confirmEndSessionButton" title="End the photo session">End Session</button>
-        </div>
+    <!-- Video and Canvas for photo capture -->
+    <div class="camera-container">
+        <video id="video" autoplay class="camera-video"></video> <!-- Camera stream -->
+        <canvas id="canvas" class="camera-canvas" style="display: none;"></canvas> <!-- For drawing photos -->
     </div>
 
-    <!-- Capture Photo Modal -->
-    <div id="capturePhotoModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Capture Photo</h2>
-            <p>Click below to capture a photo.</p>
-            <button id="capturePhotoButton" title="Capture a photo">Capture Photo</button>
-        </div>
-    </div>
-
-    <!-- Photo Gallery -->
-    <div id="photoGallery">
-        <!-- Captured photos will be displayed here -->
-    </div>
+    <!-- Photo gallery to display captured photos -->
+    <div id="photo-gallery" class="photo-grid"></div>
 
     <!-- Error message display area -->
     <div id="error-message"></div>
