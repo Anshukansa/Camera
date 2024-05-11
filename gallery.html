@@ -9,7 +9,7 @@
     <h1>Photo Gallery</h1>
      <div id="controls">
             <div class="button-group">
-            <button id="deleteAllPhotos" title="Delete all stored photos" disabled>
+            <button id="deleteAllPhotos" title="Delete all stored photos">
                 <i class="fas fa-trash"></i> Delete All Photos
     </button>
 </div>
@@ -19,7 +19,7 @@
     <script src="app.js"></script> <!-- Link to your JavaScript code -->
     <script>
         // Load stored photos from IndexedDB and display them
-        async function loadPhotos() {
+        async function loadAllPhotos() {
             try {
                 const storedPhotos = await getAllPhotos(); // Retrieve all stored photos
 
