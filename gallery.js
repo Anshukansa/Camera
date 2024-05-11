@@ -4,7 +4,7 @@ const ALL_PHOTOS_STORE_NAME = "all_photos";
 const DB_VERSION = 1;
 
 // Get reference to UI elements
-const allphotoGallery = document.getElementById("all-photo-gallery");
+const allPhotoGallery = document.getElementById("all-photo-gallery");
 const errorMessage = document.getElementById("error-message");
 
 // Function to retrieve all stored photos from a specific store in IndexedDB
@@ -29,15 +29,15 @@ async function getAllPhotos(storeName) {
 async function loadSessionPhotos() {
     try {
         const sessionPhotos = await getAllPhotos(SESSION_STORE_NAME);
-        const sessionPhotoGallery = document.getElementById("session-photo-gallery");
+        const session = document.getElementById("session-photo-gallery");
 
-        sessionPhotoGallery.innerHTML = ""; // Clear existing session photos in the gallery
+        session.innerHTML = ""; // Clear existing session photos in the gallery
 
         sessionPhotos.forEach((photo) => {
             const imgElement = document.createElement("img");
             imgElement.src = URL.createObjectURL(photo.blob); // Display the session photo
             imgElement.className = "photo-thumbnail"; // Styled thumbnail
-            sessionPhotoGallery.appendChild(imgElement);
+            session.appendChild(imgElement);
         });
 
         if (sessionPhotos.length > 0) {
