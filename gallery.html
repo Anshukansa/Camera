@@ -21,6 +21,31 @@
     <!-- Link to the updated JavaScript file -->
     <script src="app.js"></script>
     <script>
+        // Function to load all photos from IndexedDB
+        async function loadAllPhotos() {
+            try {
+                const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
+
+                const photoGallery = document.getElementById("photo-gallery");
+
+                // Clear existing photos in the gallery
+                photoGallery.innerHTML = "";
+
+                // Display the photos in the gallery
+                allPhotos.forEach((photo) => {
+                    const imgElement = document.createElement("img");
+                    imgElement.src = URL.createObjectURL(photo.blob); // Display the photo
+                    imgElement.className = "photo-thumbnail"; // Styled thumbnail
+                    photoGallery.appendChild(imgElement);
+                });
+
+                // Optionally, you can enable other functionality related to photos here, such as delete buttons, etc.
+
+            } catch (error) {
+                showError("Error loading all photos: " + error.message);
+            }
+        }
+
         // Load all stored photos when initializing the gallery
         loadAllPhotos();
     </script>
