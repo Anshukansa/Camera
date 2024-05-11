@@ -243,6 +243,7 @@ async function endSession() {
     sessionActive = false; // Set session inactive
     startSessionButton.style.display = "block"; // show the "Start Session" button
     endSessionButton.style.display = "none";  // hide the "End Session" button
+    deleteSessionPhotosButton.disabled = false; // To enable the delete button
     capturePhotoButton.style.display = "none"; // hide the "Capture" button
 
 
