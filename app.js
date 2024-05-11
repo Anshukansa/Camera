@@ -14,6 +14,7 @@ const capturePhotoButton = document.getElementById("capturePhoto");
 const endSessionButton = document.getElementById("endSession");
 const sharePhotosButton = document.getElementById("sharePhotos");
 const deleteSessionPhotosButton = document.getElementById("deleteSessionPhotos");
+const deleteAllPhotosButton = document.getElementById("deleteAllPhotos");
 const videoElement = document.getElementById("video");
 const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
@@ -328,6 +329,7 @@ startSessionButton.addEventListener("click", startSession); // Start the session
 capturePhotoButton.addEventListener("click", capturePhoto); // Capture a photo
 endSessionButton.addEventListener("click", endSession); // End the session
 deleteSessionPhotosButton.addEventListener("click", deleteSessionPhotos); // Delete session photos
+deleteAllPhotosButton.addEventListener("click", deleteAllPhotos); // Delete all photos
 sharePhotosButton.addEventListener("click", async () => {
     const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
 
