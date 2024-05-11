@@ -336,7 +336,7 @@ async function deleteSessionPhotos() {
     if (confirm("Are you sure you want to delete all session photos?")) {
         try {
             await clearStore(SESSION_STORE_NAME);
-            photoGallery.innerHTML = ""; // Clear the gallery
+            sessionPhotoGallery.innerHTML = ""; // Clear the gallery
             deleteSessionPhotosButton.disabled = true; // Disable delete button
         } catch (error) {
             showError("Error deleting session photos: " + error.message);
@@ -349,7 +349,7 @@ async function deleteAllPhotos() {
     if (confirm("Are you sure you want to delete all photos?")) {
         try {
             await clearStore(ALL_PHOTOS_STORE_NAME);
-            photoGallery.innerHTML = ""; // Clear the gallery
+            allPhotoGallery.innerHTML = ""; // Clear the gallery
             deleteSessionPhotosButton.disabled = true; // Disable delete button
         } catch (error) {
             showError("Error deleting session photos: " + error.message);
