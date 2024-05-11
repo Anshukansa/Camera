@@ -13,6 +13,7 @@ const startSessionButton = document.getElementById("startSession");
 const capturePhotoButton = document.getElementById("capturePhoto");
 const endSessionButton = document.getElementById("endSession");
 const sharePhotosButton = document.getElementById("sharePhotos");
+const shareSessionPhotosButton = document.getElementById("sharePhotos");
 const deleteSessionPhotosButton = document.getElementById("deleteSessionPhotos");
 const deleteAllPhotosButton = document.getElementById("deleteAllPhotos");
 const videoElement = document.getElementById("video");
@@ -379,6 +380,33 @@ sharePhotosButton.addEventListener("click", async () => {
         showError("Web Share API does not support sharing files in this browser.");
     }
 });
+
+// Event listener for sharing session photos
+shareSessionPhotosButton.addEventListener("click", async () => {
+    const sessionPhotos = await getAllPhotos(SESSION_STORE_NAME);
+
+    if (sessionPhotos.length === 0) {
+        showError("No session photos to share.");
+        return;
+    }
+
+    const photoFiles = sessionPhotos.map((photo) => new File([photo.blob], "session_snapshot.png", { type: "image/png" }));
+
+    if (navigator.canShare && navigator.canShare({ files: photoFiles })) {
+        try {
+            await navigator.share({
+                files: photoFiles,
+                title: "Session Photos",
+                text: "Here are the session photos I took!",
+            });
+        } catch (error) {
+            showError("Error sharing session photos: " + error.message);
+        }
+    } else {
+        showError("Web Share API does not support sharing files in this browser.");
+    }
+});
+
 
 // Load all stored photos when initializing the app
 loadAllPhotos();
