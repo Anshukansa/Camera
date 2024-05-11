@@ -26,26 +26,31 @@ async function getAllPhotos(storeName) {
     });
 }
 
-async function loadSessionPhotos() {
+async function loadAllPhotos() {
     try {
-        const sessionPhotos = await getAllPhotos(SESSION_STORE_NAME);
-        const session = document.getElementById("session-photo-gallery");
+        const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
+        const allPhotoGallery = document.getElementById("all-photo-gallery");
 
-        session.innerHTML = ""; // Clear existing session photos in the gallery
+        allPhotoGallery.innerHTML = ""; // Clear existing all photos in the gallery
 
-        sessionPhotos.forEach((photo) => {
+        allPhotos.forEach((photo) => {
             const imgElement = document.createElement("img");
-            imgElement.src = URL.createObjectURL(photo.blob); // Display the session photo
+            imgElement.src = URL.createObjectURL(photo.blob); // Display the all photo
             imgElement.className = "photo-thumbnail"; // Styled thumbnail
-            session.appendChild(imgElement);
+            allPhotoGallery.appendChild(imgElement);
         });
 
-        if (sessionPhotos.length > 0) {
-            // Enable appropriate buttons or perform other actions specific to session photos
+        if (allPhotos.length > 0) {
+            sharePhotosButton.style.display =  "block"; 
+            sharePhotosButton.disabled = false; // Enable share button if there are photos to share
+            deleteSessionPhotosButton.style.display =  "block"; 
+            deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
+            deleteAllPhotosButton.style.display =  "block"; 
+            deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
         }
 
     } catch (error) {
-        showError("Error loading session photos: " + error.message);
+        showError("Error loading all photos: " + error.message);
     }
 }
 
