@@ -173,7 +173,8 @@ async function startSession() {
         await requestLocationPermission();
 
         
-        
+        // show the camera container when session starts
+        document.querySelector('.camera-container').style.display = "block";
         
         sessionActive = true; // Set session active
         startSessionButton.style.display = "none"; // Hide the "Start Session" button
@@ -247,7 +248,8 @@ async function endSession() {
     if (cameraStream) {
         cameraStream.getTracks().forEach((track) => track.stop());
     }
-
+        // Hide the camera container when session starts
+        document.querySelector('.camera-container').style.display = "none";
         startSessionButton.style.display = "block";
         endSessionButton.style.display = "none";
         capturePhotoButton.style.display = "none"; 
