@@ -8,42 +8,6 @@ const SESSION_STORE_NAME = "session_photos";
 const ALL_PHOTOS_STORE_NAME = "all_photos";
 const DB_VERSION = 1;
 
-// Add event listeners for modal dialogs
-document.addEventListener("DOMContentLoaded", function() {
-    // Get the modal elements
-    const startSessionModal = document.getElementById("startSessionModal");
-    const endSessionModal = document.getElementById("endSessionModal");
-    const capturePhotoModal = document.getElementById("capturePhotoModal");
-
-    // Get the close buttons for modal dialogs
-    const closeButtons = document.getElementsByClassName("close");
-
-    // Open start session modal
-    startSessionButton.addEventListener("click", function() {
-        startSessionModal.style.display = "block";
-    });
-
-    // Close modals when clicking on close button or outside the modal
-    for (let i = 0; i < closeButtons.length; i++) {
-        closeButtons[i].addEventListener("click", function() {
-            startSessionModal.style.display = "none";
-            endSessionModal.style.display = "none";
-            capturePhotoModal.style.display = "none";
-        });
-    }
-
-    window.onclick = function(event) {
-        if (event.target == startSessionModal || event.target == endSessionModal || event.target == capturePhotoModal) {
-            startSessionModal.style.display = "none";
-            endSessionModal.style.display = "none";
-            capturePhotoModal.style.display = "none";
-        }
-    };
-
-    // Other JavaScript functions remain unchanged
-});
-
-
 // Get references to UI elements
 const startSessionButton = document.getElementById("startSession");
 const capturePhotoButton = document.getElementById("capturePhoto");
