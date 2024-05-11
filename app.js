@@ -221,6 +221,7 @@ async function capturePhoto() {
         photoGallery.appendChild(imgElement);
 
         deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
+        deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
