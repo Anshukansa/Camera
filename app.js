@@ -273,6 +273,10 @@ async function endSession() {
         // Clear session photos from IndexedDB
         await clearStore(SESSION_STORE_NAME);
 
+        // Redirect to another page after completing all operations
+        window.location.href = "gallery.html";
+
+
     } catch (error) {
         showError("Error ending session: " + error.message);
     }
