@@ -235,8 +235,7 @@ async function capturePhoto() {
         // Enable delete buttons after capturing a photo
         deleteSessionPhotosButton.style.display = "block";
         deleteSessionPhotosButton.disabled = false;
-        deleteAllPhotosButton.style.display = "block";
-        deleteAllPhotosButton.disabled = false;
+        
 
     } catch (error) {
         showError("Error capturing photo: " + error.message);
@@ -252,10 +251,10 @@ async function endSession() {
         startSessionButton.style.display = "block";
         endSessionButton.style.display = "none";
         capturePhotoButton.style.display = "none"; 
-        sharePhotosButton.style.display =  "block"; 
+        sharePhotosButton.style.display =  "none"; 
         sharePhotosButton.disabled = false; // Enable share button if there are photos to share
-        deleteSessionPhotosButton.style.display =  "block"; 
-        deleteAllPhotosButton.style.display =  "block";
+        deleteSessionPhotosButton.style.display =  "none"; 
+        deleteAllPhotosButton.style.display =  "none";
 
 
     try {
