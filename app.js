@@ -313,7 +313,12 @@ async function loadSessionPhotos() {
         });
 
         if (sessionPhotos.length > 0) {
-            // Enable appropriate buttons or perform other actions specific to session photos
+            sharePhotosButton.style.display =  "block"; 
+            sharePhotosButton.disabled = false; // Enable share button if there are photos to share
+            deleteSessionPhotosButton.style.display =  "block"; 
+            deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
+            deleteAllPhotosButton.style.display =  "block"; 
+            deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
         }
 
     } catch (error) {
@@ -336,12 +341,7 @@ async function loadAllPhotos() {
         });
 
         if (allPhotos.length > 0) {
-            sharePhotosButton.style.display =  "block"; 
-            sharePhotosButton.disabled = false; // Enable share button if there are photos to share
-            deleteSessionPhotosButton.style.display =  "block"; 
-            deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
-            deleteAllPhotosButton.style.display =  "block"; 
-            deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
+            
         }
 
     } catch (error) {
