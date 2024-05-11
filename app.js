@@ -296,17 +296,41 @@ async function clearStore(storeName) {
 }
 
 // Function to load all photos from the all_photos store
+async function loadSessionPhotos() {
+    try {
+        const sessionPhotos = await getAllPhotos(SESSION_STORE_NAME);
+        const sessionPhotoGallery = document.getElementById("session-photo-gallery");
+
+        sessionPhotoGallery.innerHTML = ""; // Clear existing session photos in the gallery
+
+        sessionPhotos.forEach((photo) => {
+            const imgElement = document.createElement("img");
+            imgElement.src = URL.createObjectURL(photo.blob); // Display the session photo
+            imgElement.className = "photo-thumbnail"; // Styled thumbnail
+            sessionPhotoGallery.appendChild(imgElement);
+        });
+
+        if (sessionPhotos.length > 0) {
+            // Enable appropriate buttons or perform other actions specific to session photos
+        }
+
+    } catch (error) {
+        showError("Error loading session photos: " + error.message);
+    }
+}
+
 async function loadAllPhotos() {
     try {
         const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
+        const allPhotoGallery = document.getElementById("all-photo-gallery");
 
-        photoGallery.innerHTML = ""; // Clear existing photos in the gallery
+        allPhotoGallery.innerHTML = ""; // Clear existing all photos in the gallery
 
         allPhotos.forEach((photo) => {
             const imgElement = document.createElement("img");
-            imgElement.src = URL.createObjectURL(photo.blob); // Display the photo
+            imgElement.src = URL.createObjectURL(photo.blob); // Display the all photo
             imgElement.className = "photo-thumbnail"; // Styled thumbnail
-            photoGallery.appendChild(imgElement);
+            allPhotoGallery.appendChild(imgElement);
         });
 
         if (allPhotos.length > 0) {
@@ -316,14 +340,12 @@ async function loadAllPhotos() {
             deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
             deleteAllPhotosButton.style.display =  "block"; 
             deleteAllPhotosButton.disabled = false; // Enable delete button after capturing a photo
-            
         }
 
     } catch (error) {
         showError("Error loading all photos: " + error.message);
     }
 }
-
 
 // Function to delete session photos
 async function deleteSessionPhotos() {
