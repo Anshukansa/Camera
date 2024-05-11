@@ -27,6 +27,10 @@ button:disabled {
     cursor: not-allowed;
 }
 
+.hide {
+    display: none;
+}
+
 /* Group buttons with spacing */
 .button-group {
     display: none;
