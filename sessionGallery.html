@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Photo Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For icons -->
+    <link rel="stylesheet" href="style.css"> <!-- Updated CSS styling -->
+</head>
+<body>
+    <h1>Photo Gallery</h1>
+
+    <!-- Photo gallery to display captured photos -->
+    <div id="session-photo-gallery" class="photo-grid"></div>
+<div id="controls">
+        <div class="button-group">
+            <button id="shareSessionPhotos"title="Share captured photos">
+                <i class="fas fa-share"></i> Share Photos
+            </button>
+            <div class="button-group">
+            <button id="deleteSessionPhotos" title="Delete all stored photos">
+                <i class="fas fa-trash"></i> Delete All Photos
+            </button>
+            <button id="navigateToOtherPage" title="Navigate to other page">
+              <a href="index.html">Main Page</a>
+              <button id="navigateToOtherPage" title="Navigate to other page">
+              <a href="gallery.html">Gallery Page</a>
+            </button>
+
+
+    <!-- Error message display area -->
+    <div id="error-message"></div>
+
+    <!-- Link to the updated JavaScript file -->
+    <script src="sessionGallery.js"></script>
+    <script src="app.js"></script>
+  
+</body>
+</html>
