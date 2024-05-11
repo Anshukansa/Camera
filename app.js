@@ -266,7 +266,7 @@ async function endSession() {
         await clearStore(SESSION_STORE_NAME);
 
         // Redirect to another page after completing all operations
-        window.location.href = "gallery.html";
+        window.location.href = "sessionGallery.html";
 
 
     } catch (error) {
