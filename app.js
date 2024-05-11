@@ -18,8 +18,8 @@ const deleteAllPhotosButton = document.getElementById("deleteAllPhotos");
 const videoElement = document.getElementById("video");
 const canvasElement = document.getElementById("canvas");
 const context = canvasElement.getContext("2d");
-const photoGallery = document.getElementById("session-photo-gallery");
-const photoGallery = document.getElementById("all-photo-gallery");
+const sessionPhotoGallery = document.getElementById("session-photo-gallery");
+const allPhotoGallery = document.getElementById("all-photo-gallery");
 const errorMessage = document.getElementById("error-message");
 
 // Function to clear error messages
@@ -187,7 +187,7 @@ async function startSession() {
         capturePhotoButton.style.display = "block"; 
         
         // Reset the session photo gallery
-        photoGallery.innerHTML = "";
+        sessionPhotoGallery.innerHTML = "";
 
     } catch (error) {
         showError("Error starting session: " + error.message);
@@ -228,7 +228,8 @@ async function capturePhoto() {
         const imgElement = document.createElement("img");
         imgElement.src = URL.createObjectURL(photoBlob); // Thumbnail image
         imgElement.className = "photo-thumbnail"; // Styled thumbnail
-        photoGallery.appendChild(imgElement);
+        sessionPhotoGallery.appendChild(imgElement);
+        allPhotoGallery.appendChild(imgElement);
 
         // Enable share button after capturing a photo
         sharePhotosButton.style.display = "block";
