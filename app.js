@@ -177,7 +177,7 @@ async function startSession() {
         
         sessionActive = true; // Set session active
         startSessionButton.style.display = "none"; // Hide the "Start Session" button
-        capturePhotoButton.disabled = false; // Enable capture button
+        endSessionButton.style.display = "block";  // Show the "End Session" button
         endSessionButton.disabled = false; // Enable end session button
         deleteSessionPhotosButton.disabled = true; // Disable delete button initially
 
@@ -240,7 +240,8 @@ async function endSession() {
     }
 
     sessionActive = false; // Set session inactive
-    startSessionButtonn.style.display = "block"; // show the "Start Session" button
+    startSessionButton.style.display = "block"; // Hide the "Start Session" button
+    endSessionButton.style.display = "none";  // Show the "End Session" button
     capturePhotoButton.disabled = true;
     endSessionButton.disabled = true;
 
