@@ -33,7 +33,7 @@ button:disabled {
 
 /* Group buttons with spacing */
 .button-group {
-    display: none;
+    display: block;
     justify-content: center;
     gap: 10px; /* Space between buttons */
 }
