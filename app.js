@@ -229,7 +229,7 @@ async function capturePhoto() {
         imgElement.src = URL.createObjectURL(photoBlob); // Thumbnail image
         imgElement.className = "photo-thumbnail"; // Styled thumbnail
         sessionPhotoGallery.appendChild(imgElement);
-        allPhotoGallery.appendChild(imgElement);
+       
 
         // Enable share button after capturing a photo
         sharePhotosButton.style.display = "block";
