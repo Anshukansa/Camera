@@ -28,7 +28,7 @@ button:disabled {
 }
 
 /* Group buttons with spacing */
-.captureButton {
+.startSessionButton {
     display: block;
     justify-content: center;
     gap: 10px; /* Space between buttons */
