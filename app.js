@@ -180,6 +180,9 @@ async function startSession() {
         
         endSessionButton.disabled = false; // Enable end session button
         endSessionButton.style.display = "block";  // Show the "End Session" button
+
+        sharePhotosButton.style.display =  "block"; 
+        sharePhotosButton.disabled = false; // Enable share button if there are photos to share
         
         capturePhotoButton.disabled = false; 
         capturePhotoButton.style.display = "block"; 
