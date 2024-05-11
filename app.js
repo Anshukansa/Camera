@@ -13,7 +13,7 @@ const startSessionButton = document.getElementById("startSession");
 const capturePhotoButton = document.getElementById("capturePhoto");
 const endSessionButton = document.getElementById("endSession");
 const sharePhotosButton = document.getElementById("sharePhotos");
-const shareSessionPhotosButton = document.getElementById("sharePhotos");
+const shareSessionPhotosButton = document.getElementById("shareSessionPhotos");
 const deleteSessionPhotosButton = document.getElementById("deleteSessionPhotos");
 const deleteAllPhotosButton = document.getElementById("deleteAllPhotos");
 const videoElement = document.getElementById("video");
@@ -232,9 +232,8 @@ async function capturePhoto() {
         sessionPhotoGallery.appendChild(imgElement);
        
 
-        // Enable share button after capturing a photo
-        sharePhotosButton.style.display = "block";
-        sharePhotosButton.disabled = false;
+        shareSessionPhotosButton.style.display = "block";
+        shareSessionPhotosButton.disabled = false;
 
         // Enable delete buttons after capturing a photo
         deleteSessionPhotosButton.style.display = "block";
@@ -309,8 +308,8 @@ async function loadSessionPhotos() {
         });
 
         if (sessionPhotos.length > 0) {
-            sharePhotosButton.style.display =  "block"; 
-            sharePhotosButton.disabled = false; // Enable share button if there are photos to share
+            shareSessionPhotosButton.style.display =  "block"; 
+            shareSessionPhotosButton.disabled = false; // Enable share button if there are photos to share
             deleteSessionPhotosButton.style.display =  "block"; 
             deleteSessionPhotosButton.disabled = false; // Enable delete button after capturing a photo
             deleteAllPhotosButton.style.display =  "block"; 
