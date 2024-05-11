@@ -28,8 +28,15 @@ button:disabled {
 }
 
 /* Group buttons with spacing */
+.captureButton {
+    display: block;
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+}
+
+/* Group buttons with spacing */
 .button-group {
-    display: inline-flex;
+    display: none;
     justify-content: center;
     gap: 10px; /* Space between buttons */
 }
