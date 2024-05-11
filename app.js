@@ -178,8 +178,10 @@ async function startSession() {
         sessionActive = true; // Set session active
         startSessionButton.style.display = "none"; // Hide the "Start Session" button
         endSessionButton.style.display = "block";  // Show the "End Session" button
-        capturePhotoButton.style.display = "block"; // Show the "Capture" button
-        endSessionButton.disabled = false; // Enable end session button
+        
+        capturePhotoButton.disabled = false; // Enable end session button
+        capturePhotoButton.style.display = "block"; // Show the "Capture" button  
+        
         deleteSessionPhotosButton.disabled = true; // Disable delete button initially
 
         // Reset the session photo gallery
