@@ -286,6 +286,19 @@ async function deleteSessionPhotos() {
     }
 }
 
+// Function to delete session photos
+async function deleteAllPhotos() {
+    if (confirm("Are you sure you want to delete all photos?")) {
+        try {
+            await clearStore(ALL_PHOTOS_STORE_NAME);
+            photoGallery.innerHTML = ""; // Clear the gallery
+            deleteSessionPhotosButton.disabled = true; // Disable delete button
+        } catch (error) {
+            showError("Error deleting session photos: " + error.message);
+        }
+    }
+}
+
 // Function to load all photos from the all_photos store
 async function loadAllPhotos() {
     try {
