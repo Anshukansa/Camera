@@ -181,9 +181,9 @@ async function startSession() {
         endSessionButton.disabled = false; // Enable end session button
         endSessionButton.style.display = "block";  // Show the "End Session" button
         
- 
+        capturePhotoButton.disabled = false; 
+        capturePhotoButton.style.display = "block"; 
         
-
         // Reset the session photo gallery
         photoGallery.innerHTML = "";
 
