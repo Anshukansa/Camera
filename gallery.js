@@ -26,28 +26,29 @@ async function getAllPhotos(storeName) {
     });
 }
 
-// Function to load all photos from the all_photos store
-async function loadAllPhotos() {
+async function loadSessionPhotos() {
     try {
-        const allPhotos = await getAllPhotos(ALL_PHOTOS_STORE_NAME);
+        const sessionPhotos = await getAllPhotos(SESSION_STORE_NAME);
+        const sessionPhotoGallery = document.getElementById("session-photo-gallery");
 
-        photoGallery.innerHTML = ""; // Clear existing photos in the gallery
+        sessionPhotoGallery.innerHTML = ""; // Clear existing session photos in the gallery
 
-        allPhotos.forEach((photo) => {
+        sessionPhotos.forEach((photo) => {
             const imgElement = document.createElement("img");
-            imgElement.src = URL.createObjectURL(photo.blob); // Display the photo
+            imgElement.src = URL.createObjectURL(photo.blob); // Display the session photo
             imgElement.className = "photo-thumbnail"; // Styled thumbnail
-            photoGallery.appendChild(imgElement);
+            sessionPhotoGallery.appendChild(imgElement);
         });
 
-        if (allPhotos.length === 0) {
-            showError("No photos found.");
+        if (sessionPhotos.length > 0) {
+            // Enable appropriate buttons or perform other actions specific to session photos
         }
 
     } catch (error) {
-        showError("Error loading all photos: " + error.message);
+        showError("Error loading session photos: " + error.message);
     }
 }
+
 
 // Function to show error messages
 function showError(message) {
