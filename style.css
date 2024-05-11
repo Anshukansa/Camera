@@ -27,10 +27,10 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Group buttons with spacing */
-.button-group > button:not(#startSession) {
+#controls > .button-group > button:not(#startSession) {
     display: block;
 }
+
 
 /* Group buttons with spacing */
 .button-group {
