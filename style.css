@@ -4,7 +4,7 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: center;
     padding: 20px;
-    background-color: #f8fafc; /* Light grey background */
+    background-color: #f0f0f0; /* Light grey background */
 }
 
 /* Styling for buttons */
@@ -36,6 +36,7 @@ button:disabled {
 
 /* Group buttons with spacing */
 .button-group {
+    background-color: #f8fafc;
     display: block;
     justify-content: center;
     gap: 10px; /* Space between buttons */
