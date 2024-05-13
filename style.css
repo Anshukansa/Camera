@@ -4,7 +4,7 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: center;
     padding: 20px;
-    background-color: #f4f4f4; /* Light grey background */
+    background-color: #f8fafc; /* Light grey background */
 }
 
 /* Styling for buttons */
@@ -16,7 +16,7 @@ padding: 12px 24px;
 font-weight: 500;
 border-radius: 16px;
 box-shadow: 0 10px 30px ☐ rgba(0, 0, 0, 0. 1);
-transition: all 0.3; 
+transition: all 0.3 ease; 
 }
 
 /* Hover effects */
