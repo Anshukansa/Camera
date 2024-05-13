@@ -15,7 +15,7 @@ background: #fff;
 padding: 12px 24px;
 font-weight: 500;
 border-radius: 16px;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 transition: all 0.3 ease; 
 }
 
