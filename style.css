@@ -131,6 +131,20 @@ button:active {
   margin-top: 20px;
 }
 
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 10px;
+  margin-top: 20px;
+}
+
+.photo-thumbnail {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
 /* Responsive Styles */
 
 @media (max-width: 600px) {
