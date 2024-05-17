@@ -181,13 +181,9 @@ async function startSession() {
         document.querySelector('.camera-container').style.display = "block";
         
         sessionActive = true; // Set session active
-        startSessionButton.style.display = "none"; // Hide the "Start Session" button
-        
-        endSessionButton.disabled = false; // Enable end session button
-        endSessionButton.style.display = "block";  // Show the "End Session" button
-        
-        capturePhotoButton.disabled = false; 
-        capturePhotoButton.style.display = "block"; 
+       cameraContainer.style.display = "block"; 
+        controlsActive.style.display = "block"; 
+        controlsNonActive.style.display = "none"; 
         
         // Reset the session photo gallery
         sessionPhotoGallery.innerHTML = "";
