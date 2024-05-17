@@ -22,6 +22,9 @@ const context = canvasElement.getContext("2d");
 const sessionPhotoGallery = document.getElementById("session-photo-gallery");
 const allPhotoGallery = document.getElementById("all-photo-gallery");
 const errorMessage = document.getElementById("error-message");
+const cameraContainer = document.querySelector('.camera-container');
+const controlsNonActive = document.querySelector('#controls-nonActive');
+const controlsActive = document.querySelector('#controls-Active');
 
 // Function to clear error messages
 function clearError() {
@@ -181,7 +184,7 @@ async function startSession() {
         document.querySelector('.camera-container').style.display = "block";
         
         sessionActive = true; // Set session active
-       cameraContainer.style.display = "block"; 
+        cameraContainer.style.display = "block"; 
         controlsActive.style.display = "block"; 
         controlsNonActive.style.display = "none"; 
         
